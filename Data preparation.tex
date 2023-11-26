@@ -1,0 +1,152 @@
+\chapter{Data preparation}
+
+Data preparation uses the information provided by data understanding to select attributes, reduce the data dimension, treat missing values and outliers, transform the data and improve its quality.
+
+\section{Overview of techniques}
+
+Roughly speaking, the following topics can be organized in two categories: selectiong data objects and attributes, and creating and changing the attributes.
+
+\subsection{Aggregation}
+
+Aggregation consists in combining two or more objects into a single object. Typically, quantitative attributes are aggregated by taking a sum or an average, while qualitative ones are either omitted or summarized as an higher level category.
+
+There are several motivations for aggregation:
+
+\begin{itemize}
+    \item \textbf{Data reduction}: the smaller the size of the dataset, the less memory and processing time it will require;
+
+    \item \textbf{Change of scope or scale}: it can provide a more higher-level view of the data;
+
+    \item \textbf{Stabilizing the data}: the behaviour of groups of objects or attributes is often more stable than that of individual ones. 
+\end{itemize}
+
+\subsection{Sampling}
+
+Sampling is commonly used to select a subset of the data objects to be analyzed. The key principle for effective sampling is the following: using a sample will work almost as well as using the entire dataset if the sample is representative.
+
+\paragraph{Representative sample} A sample is representative if it has approximately the same property (of interest) as the original set of data.
+
+There are many sampling techniques:
+
+\begin{itemize}
+    \item \textbf{Simple random sampling}: there is an equal probability of selecting any particular object. There's two variations; \textbf{sampling without replacement}, where as each object is selected, it is removed from the set of all objects that constitute the population, and \textbf{sampling with replacement}, where objects are not removed as they are selected, so the same object may be picked more than once.
+
+    \item \textbf{Stratified sampling}: when the population consists of different types of objects, simple random sampling may fail to represent less frequent ones. Stratified sampling starts by using data already organized into groups, and picks an equal number of objects from each group, so that they can all be equally represented.
+\end{itemize}
+
+Determining the sample size can be difficult sometimes, so adaptive or \textbf{progressive sampling} schemes are used: these approaches start with a small sample, and increase its size until it's big enough for the task.
+
+\subsection{Dimensionality reduction}
+
+Datasets can have a large number of features, some of which may actually be removed entirely from the dataset without damaging the properties of the data. The reason behind wanting to reduce the dimensionality of data is that it can remove useless attributes, and also remove noise (see: curse of dimensionality; the higher the number of dimensions, the sparser the data) and make the data easier to visualize. Another obvious advantage is a reduction in actual memory required to store the dataset.
+
+The main techniques of dimensionality reduction include:
+
+\begin{itemize}
+    \item \textbf{Principal Components Analysis (PCA)}: a linear algebra technique that finds new attributes that are linear combinations of the original attributes, orthogonal to each other, and capture the maximum amount of variation in the data.
+
+    \item \textbf{Singular Value Decomposition (SVD)}: a linear algebra technique that is related to PCA.
+\end{itemize}
+
+\subsubsection{}{PCA}
+Variance and covariance are key factors in constructing PCA. \textbf{Variance} measures the spread of a set of points from the mean, while \textbf{covariance} is a measure of how much each of the dimensions vary from the mean with respect to each other. SO, covariance is measured between two dimensions to see if there's a relationship. The covariance between a dimension and itself is the variance.
+
+The first principal component is the dimension with the largest possible variance in the dataset. The second principal one is calculated in the same way, with the condition that it is uncorrelated with the first principal component and also accounts for the next highest variance.
+
+\subsection{Feature subsection selection}
+
+Another way ofreducing the dimensionality of the dataset is to only select a subset of the features; this technique is used in the presence of redundant features and irrelevant features. \textbf{Redundant features} duplicate much or all information contained in one or more attributes. \textbf{Irrelevant features} contain almost to no useful information for the task at hand.
+
+While some irrelevant or redundant features can be removed by simply using commons sense or domain knowledge, sometimes a more systematic approach is needed. The simplest approach is to try all possible subsets of features as input to the algorithm we want to use, and take the one that produces the best output. However, the number of subsets involving $n$ attributes would be $2^n$, so this approach is often very impractical. There are three standard approaches used for feature selection, explained below.
+
+\begin{itemize}
+    \item \textbf{Embedded approaches}: feature selection occurs naturally as part of the data mining algorithm. Specifically, it's the algorithm itself that selects which attributes to use and which to ignore. 
+
+    \item \textbf{Filter approaches}: features are selected before the algorithm is run, using an approach independent from the task that uses the significance and correlation between attributes to do the selection.
+
+    \item \textbf{Wrapper approaches}: these methods use the target data mining algorithm as a black box o find the best subset, similarly to the bruteforce approach described above, but without enumerating all subsets. Some techniques include selecting the top-ranked features, selecting the top ranked subset, forward selection (starting with an empty subset, add one feature at a time, then yield the one with the best improvement), backward elmination (start with the full set of features, remove one by one, remove completely the one the yields the least decrease in performance).
+\end{itemize}
+
+\subsection{Feature creation}
+
+It's also possible to create new features starting from existing ones that are capable of capturing the important information better. The final number of attributes can be smaller than the starting one, reducing the dimensionality as well. There are two general methodologies to do feature creation:
+
+\begin{itemize}
+    \item \textbf{Feature construction/extraction}: the new hiher-level features are created by combining the original features. This is a highly domain-specific technique. An example of feature construction may be the following: a dataset where each object has attributes \textit{mass} and \textit{volume}, we can combine them to construct the attribute \textit{density = mass / volume}, and remove the previous two attributes.
+
+    \item \textbf{Feature projection}: the data is mapped to a new space with lower dimensionality. This mapping may be linear or noninear, and can be achieved with many approaches, such as PCA, SVD, non-negative matrix factorization (NMF), linear discrimination analysis (LDA), and autoencoder.
+\end{itemize}
+
+\subsection{Data cleaning}
+
+Data cleaning involves handling of anomalous values and outliers. \textbf{Missing values} are values that were not inserted into the dataset, whether because the user refused to give certain information, or because a sensor or other system to collect data was malfunctioning. They're often marked by a special value, commonly \textit{NULL} or $?$, but may also correspond to a default value (and be much more difficult to recognize as a result). \textbf{Unknown values} are values without a real meaning. \textbf{Invalid values} are values that are not significant to the task.
+
+In order to manage missing values, the two approaches are:
+
+\begin{itemize}
+    \item \textbf{Eliminating records}: the whole record is removed (removing all the other attribute values);
+
+    \item \textbf{Substitution of values}: the missing values can be replaced by the mean / median / mode, or by an estimate made using the probability distribution of existing values.
+\end{itemize}
+
+\subsection{Discretization and binarization}
+
+Some algorithms may specifically require that the data be in the form of categorical attributes. If the dataset presents continuous attributes, it may be necessary to transform them into discrete ones (\textbf{discretization}), or to transform them into one or more binary attributes (\textbf{binarization}). The ideal discretization or binarization approach would need to know the probability distribution of the data, which more often than not in unknown.
+
+Discretization is often used for attributes that are used in classification or association analysis. Transformation of a continuous attribute to a categorical one can be divided into two tasks: in the first one, the values of that attribute are sorted and divided into $n$ intervals by specifying $n-1$ split points; in the second step, all the values of one interval are mapped to the same categorical value. The problem consists in deciding how many split points to insert, and where to place them.
+\begin{itemize}
+    \item \textbf{Unsupervised discretization}: class information is not used: there's no labels for the instances, and the number of overall classes is unknown. The most common approaches are \textbf{natual binning}, \textbf{equal frequency binning}, and \textbf{statistical binning}.
+
+    If the number of final groups is too little, there is loss of information; if it's too high, there's too much dispersion in the data. The optimal number of classes to divide $N$ elements can be calculated as:
+
+    \begin{equation*}
+        C = 1 + \dfrac{10}{3}\log_{10}(N)
+    \end{equation*}
+
+    and the optimal width of the classes:
+
+    \begin{equation*}
+        h = \dfrac{3.5 s}{\sqrt{N}}
+    \end{equation*}
+
+    \item \textbf{Supervised discretization}: class information is known. The most common approaches are \textbf{entropy-based}, and \textbf{based on percentiles}.
+\end{itemize}
+
+Binarization is often used for association analysis tasks. A simple technique to binarize a categorical attribute is the following: if there are $m$ categorical values, assign each value to an integer  in the interval $[0, m-1]$. If the attribute is ordinal, order must be maintained by the assignment. Next, convert each of these $m$ integers to binary values: since $n = \lceil log_2(m) \rceil$ binary digits are used to represent these integers, represent these binary numbers using $n$ new binary attributes.
+
+\subsection{Attribute/Variable transformation}
+
+An attribute transformation refers to a transformation applied to all the values of an attribute. Some common transformations include:
+
+\begin{itemize}
+    \item \textbf{Simple functions}: $x^k$, $\log (x)$, $e^x$, $\sqrt{x}$, $\frac{1}{x}$, $\sin{x}$, etc.;
+
+    \item \textbf{Normalization or standardization}: a set of techniques used to adjust the differences among attributes in terms of frequency of occurrence, mean, variance and range.
+\end{itemize}
+
+A \textbf{transformation T} on the attribute $X$ is defined as: $Y = T(x)$, such that $Y$ preserves the relevant information of $X$, eliminates at least one of the problems of $X$, and is more useful than $X$.
+
+Some common normalizations are \textbf{min-max normalization} and \textbf{z-score normalization}.
+
+\BoxDef{Min-Max normalization (rescaling)}{
+\begin{equation*}
+    v' = \dfrac{v-min_A}{max_A - min_A} (new\_max_A - new\_min_A) + new\_min_A
+\end{equation*}
+}
+
+\BoxDef{Z-score normalization (standardization)}{
+\begin{equation*}
+    v' = \dfrac{v-mean_A}{\sigma_A}
+\end{equation*}
+}
+
+A common transformation function is the \textbf{exponential transformation}:
+
+\begin{equation*}
+    T_p(x) = \begin{cases}
+                ax^p+ b & p \neq 0 \\
+                c\log x + d & p = 0
+            \end{cases}   
+\end{equation*}
+
+with $a$, $b$, $c$, $d$, $p$ real values.

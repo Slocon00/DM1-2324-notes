@@ -1,0 +1,134 @@
+\chapter{Data similarity}
+
+Similarity and dissimilarity are important because they are used for many data mining techniques, such as clustering, nn classification, and anomaly detection.
+
+\textbf{Similarity} is a numerical measure of how alike two data objects are: the higher the similarity, the more they are alike. It often falls in the range $[0,1]$.
+
+\textbf{Dissimilarity} is a numerical measure of how different two data objects are: the higher the dissimilarity, the more they are different. The minimum value is often $0$, while the upper limit varies.
+
+The term \textbf{proximity} is used to refer to either similarity or dissimilarity.
+
+\section{Similarity and dissimilarity between attributes}
+
+The proximity of objects is often measured by combining the proximities of their single attributes, so we first discuss how proximity is calculated across the same attribute.
+The following table sums up how proximity is calculated for nominal, ordinal and interval or ratio attributes.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c|c|c}
+        Type & Dissimilarity & Similarity \\
+        \hline
+        Nominal & $d=\begin{cases}
+                    0 & x = y \\
+                    1 & x \neq y
+                    \end{cases}$ & $s=\begin{cases}
+                    0 & x \neq y \\
+                    1 & x = y
+                    \end{cases}$ \\
+        \hline
+        Ordinal & $d = \dfrac{|x-y|}{(n-1)}$ & $s = 1-d$\\
+        \hline
+        Interval or Ratio & $d = |x - y|$ & $s = -d$, $s=\frac{1}{1+d}$, $s = e^{-d}$\\
+    \end{tabular}
+\end{table}
+
+\section{Similarity and dissimilarity between data objects}
+
+\subsection{Dissimilarity}
+Dissimilarity between data objects are often calculated using distances, which are a kind of dissimilarities with certain propertites.
+
+\BoxDef{Minkowski distance}{
+The Minkowski distance between two points $x$ and $y$ is calculated as:
+\begin{equation*}
+    d(x,y) = (\sum_{k=1}^n |x_k - y_k|^r)^{\frac{1}{r}}
+\end{equation*}
+}
+
+The following are the three most common examples of Minkowski distances:
+
+\begin{itemize}
+    \item \textbf{Manhattan distance}: r=1
+    \item \textbf{Euclidean distance}: r=2
+    \item \textbf{Supremum distance}: r=$\inf$
+\end{itemize}
+
+\paragraph{Properties of distances}
+
+\begin{itemize}
+    \item \textbf{Positivity}
+    
+    $d(x,y) \geq 0 \forall x,y$; $d(x,y) = 0$ only if $x = y$;
+
+    \item \textbf{Symmetry}
+
+    $d(x,y) = d(y,x) \forall x,y$;
+
+    \item \textbf{Triangle inequality}
+
+    $d(x,z) \leq d(x,y) + d(y,z) \forall x,y,z$.
+\end{itemize}
+Measures that satisfy all three properties are called \textbf{metrics}.
+
+\subsection{Similarities}
+
+For similarities, the triangle inequality typically does not hold, but symmetry and positivity usually do.
+
+\paragraph{Properties of similarities}
+
+\begin{itemize}
+    \item \textbf{Positivity}
+
+    $0 \leq s(x,y) \leq 1 \forall x,y$; $s(x,y) = 1$ only if $x=y$;
+
+    \item \textbf{Symmetry}
+
+    $s(x,y) = s(y,x) \forall x,y$
+\end{itemize}
+
+\subsection{Similarity between binary vectors}
+Similarity measures between objects that contain only binary attributes are called \textbf{similarity coefficients}, and typically have values between 0 and 1.
+
+Let $x$ and $y$ be two objects that consist of $n$ binary attributes. The comparison between these two objects leads to the following four quantities:
+
+$f_{00}$ = the number of attributes where $x = 0$ and $y = 0$
+
+$f_{01}$ = the number of attributes where $x = 0$ and $y = 1$
+
+$f_{10}$ = the number of attributes where $x = 1$ and $y = 0$
+
+$f_{11}$ = the number of attributes where $x = 1$ and $y = 1$
+
+We can then define two ways to measure similarity:
+
+\BoxDef{Simple Matching Coefficient (SMC)}{
+    \begin{equation*}
+        SMC = \dfrac{f_{11} + f_{00}}{f_{00} + f_{01} + f_{10} + f_{11}}
+    \end{equation*}
+}
+This measure counts both presences and absences equally.
+
+\BoxDef{Jaccard coefficient}{
+    \begin{equation*}
+        J = \dfrac{f_{11}}{f_{01} + f_{10} + f_{11}}
+    \end{equation*}
+}    
+This measure considers presences only.
+
+\BoxDef{Cosine Similarity}{
+\begin{equation*}
+    cos(x,y) = \dfrac{\langle x,y \rangle}{\|x\|_2\|y\|_2} = \dfrac{x^T y}{\|x\|_2\|y\|_2}
+\end{equation*}
+}
+This similarity is often used for document vectors, where very few attributes per vector are non-zero and thus the similarity between the documents should not consider the number of shared 0s; the reason Jaccard distance isn't used is that it can't handle non binary attributes.
+
+\section{Correlation}
+
+Correlation measures the linear relationship between two sets of values that are observed together. It can measure the relationship between both attributes and data objects. There are many types of correlation; a measure appropriate for numerical values is Pearson's correlation.
+
+How to deal with data that has both continuous and categorical attributes? The first option is to simply pretend that categorical attributes can be represented as values and use continuous distances (obviously not the right one). The second option is to discretize the continuous attributes and use categorical distances (Jaccard, cosine, SMC).
+
+The third option is to define a new heterogeneous distance as:
+
+\begin{equation*}
+    d(x,y) = \frac{n_{cat}}{n} d_{cat}(x_{cat}, y_{cat}) + \frac{n_{con}}{n} d_{con}(x_{con},y_{con})
+\end{equation*}

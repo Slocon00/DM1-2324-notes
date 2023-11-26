@@ -1,0 +1,394 @@
+\chapter{Clustering}
+
+Cluster analysis groups data objects into clusters based on the information found in the data itself. The goal is to produce clusters such that all of the members of a single cluster are similar to each other, while objects belonging to different clusters are unrelated.
+
+The main reasons behind clustering analysis are:
+
+\begin{itemize}
+    \item \textbf{Understanding}: identifying classes and groups of objects plays an important role in how people analyze the world. Humans are naturally efficient at finding clusters and classifying new data on the basis of the clusters found. Cluster analysis is also often referred to as \textbf{unsupervised classification} for this reason (as opposed to classic classification, which is supervised).
+
+    \item \textbf{Summarization}: if instead of applying an algorithm to the whole dataset, it is applied to (accurately defined) clusters, the efficiency of the excution may be increased. This is especially important for algorithms that have a complexity of $O(l^2)$, such as regression or component analysis.
+\end{itemize}
+
+\section{Types of clusterings}
+
+Clusterings are a collection of clusters.
+
+\begin{itemize}
+    \item \textbf{Hierarchical vs Partitional}: this is the most commonly discussed partitioning. A \textbf{partitional clustering} is a division of the dataset into non overlapping clusters (i.e., the intersection of each pair of clusters is $\empty$). \textbf{Hierarchical clustering} finds a set of nested clusters that form a hierarchy organized as a tree. The cluster at the root is the cluster that contains all the others.
+
+    \item \textbf{Exclusive vs Overlapping vs Fuzzy}: an \textbf{exclusive clustering} assigns each object to only one cluster. \textbf{Overlapping (or non-exclusive) clustering} may assign on object to multiple clusters at once. in \textbf{fuzzy clustering}, every object belongs to every cluster with a weight between 0 and 1 that measures "how much" that object belongs to a given cluster: a weight of 0 means it absolutely doesn't belong, while 1 means that it absolutely belong. The sum of all the weights of a data object must sum to 1.
+
+    \item \textbf{Complete vs Partial}: a \textbf{complete clustering} assigns each object to a cluster, while a \textbf{partial clustering} does not; typically, it excludes noise and outliers that may erroneously influence the properties of the clusters during further analysis.
+
+    \item \textbf{Heterogeneous vs Homogeneous}: in \textbf{heterogeneous clustering}, all clusters have the same size/shape/density, while in \textbf{Homogeneous clustering} the cluster may differ.
+\end{itemize}
+
+\section{Types of clusters}
+
+\begin{itemize}
+    \item \textbf{Well separated}: a cluster is a set of objects in which each object is closer (or more similar) to any other point in its cluster than to any point belonging to a different cluster. This idealistic definition of cluster is satisfied only when the data contains natual clusters that are all far apart from each other. These clusters can have any shape.
+
+    \item \textbf{Prototype-based and center-based}: a cluster is a set of objects in which each object is closer to the prototype that defines the cluster it belongs to than to any other prototype. For data with continuous attributes, the prototype is often a \textbf{centroid}, calculated as the mean of all points. If the centroid is not meaningful, for example if the attributes are categorical, a \textbf{medoid} is used instead; which is the most representative point in the cluster. For many types of data, the prototype is also the most central point; we refer to these clusters as \textbf{center-based clusters}.
+
+    \item \textbf{Graph-based}: if the data can be represented by a graph, where the nodes are the objects and the links represent connections between objects, than a cluster can be defined as a \textbf{connected component}. An important type of graph-based clusters is a \textbf{contiguity-based cluster}, where two objects are connected only if they are in a specified distance from each other: each point is closer to just one other point in the cluster than it is closer to any other point in a different cluster. This definition is useful for clusters that are very irregular and intertwined.
+    
+    \item \textbf{Density-based}: a cluster is a dense region of objects that is surrounded by a region of low density. This definition is also useful for irregular clusters.
+
+    \item \textbf{Shared-property (or Conceptual clusters)}: a cluster is defined as a set of objects that share a generic property. This definition encompasses all the previous ones, and includes new ones.
+
+    \item \textbf{Objective function}: clusters are found so that they minimize or maximize an objective function.
+\end{itemize}
+
+\section{K-means}
+
+K-means clustering is a technique that defines prototypes in terms of centroids, which are the mean of a group of points.
+
+\begin{algorithm}
+\caption{Basic K-means algorithm.}
+\begin{algorithmic}[1]
+    \State Select K points as initial centroids.
+
+    \Repeat
+        \State Form K clusters by assigning each point to its closest centroid.
+
+        \State Recompute centroids of each cluster.
+    \Until{Centroids do not change.}
+\end{algorithmic}
+\end{algorithm}
+
+The distance measure used to assign a point to a cluster is typically the Euclidean or Manhattan distance for points in Euclidean space, and cosine distance for documents. As a way to measure the quality of a clustering, we use the \textbf{sum of squared error (SSE)}.
+
+\BoxDef{Sum of Squared Error (SSE)}{
+\begin{equation*}
+    SSE = \sum_j^{K} \sum_{x_i \in C_j} d(c_j, x_i)^2
+\end{equation*}
+}
+
+Given a set of initial clusters, the objective of the algorithm is to find the clustering that minimizes the SSE. One way to reduce SSE is to increase K, but a good clustering with a small K can have a lower SSE than a poor clustering with a big K.
+
+K-means mostly has issues with clusters of differing sizes, densities, and shapes; it also performs poorly if the data has too many outliers.
+
+\subsection{Proof of convergence and complexity}
+
+K-means always converges to a solution in a finite number of steps, although there's no guarantee it will converge to the global optimal solution. Since most of the convergence happens in the early steps, the stopping condition is sometimes replaced with a "relaxed" version, e.g., repeat until only 1\% of the points change clusters.
+
+\paragraph{Proof}
+
+The following proof is based on the idea of K-means as an optimization problem that minimizes the SSE. Let $C_i$ be the $i^{th}$ cluster of size $l_i$, $x_j$ a generic point in $C_i$, and $c_i$ the mean of all the points in $C_i$. Let $c_k$ be the $k^{th}$ centroid; assuming we're in a one-dimensional case, we demonstrate that $c_k$ minimizes the SSE by differentiating it and setting it equal to 0:
+
+\begin{equation*}
+    \dfrac{\partial SSE}{\partial c_k} = \sum_{i=1}^K \sum_{j = 1}^{l_i} \dfrac{\partial (c_i - x_j)^2}{\partial c_k} = \sum_{i=1}^K \sum_{j = 1}^{l_i} 2(c_i - x_j) \dfrac{\partial (c_i - x_j)}{\partial c_k} = 0
+\end{equation*}
+Since $(c_i - x_j)$ is always = 0 for $i \neq k$, the equation becomes:
+
+\begin{equation*}
+    \dfrac{\partial SSE}{\partial c_k} = \sum_{j = 1}^{l_k} 2(c_k - x_j) (1 - 0) = \sum_{j = 1}^{l_k} 2(c_k - x_j) = 0 \, ,
+\end{equation*}
+\begin{equation*}
+    \sum_{j = 1}^{l_k} 2 (c_k - x_j) = 0 \implies l_k c_k = \sum_{j = 1}^{l_k} x_j \implies c_k = \dfrac{\sum_{j = 1}^{l_k} x_j}{l_k}
+\end{equation*}
+Therefore, $c_k$ is always calculated as the centroid that minimizes the SSE. Since a (local) minimum exists, and each iteration decreases the global SSE, this minimum will be reached after a finite number of steps.
+
+The \textbf{space complexity} for K-means is modest, since only the data points and the centroids are stored: $O((m + K)n)$, where $m$ is the number of points and $n$ is the dimension of the input data. The \textbf{time complexity} is also modest: $O(I \times K \times m \times n)$, where $I$ is the number of iterations required for convergence (usually small).
+
+\subsection{Bisecting K-means}
+
+This algorithm is an extension of the traditional K-means algorithm: in order to obtain $K$ clusters, we create a cluster containing all the points in the dataset; this big cluster is split into two, and then one of the resulting clusters is split again, and so on, until the data is organized into exactly $K$ clusters.
+
+To choose the way this split is done at each iteration, we can consider the largest cluster, or the one with the larger SSE, or use a mixed criterion. Different choices will produce different clusterings. Also, since this algorithm may not produce a solution that corresponds to a local SSE minimum, the output is often used as the starting point for regular K-means.
+
+\begin{algorithm}
+\caption{Bisecting K-means algorithm.}
+\begin{algorithmic}[1]
+
+    \State Initialize the list of clusters to contain the cluster of all the points.
+
+    \Repeat
+        \State Remove the cluster with higher SSE from the list.
+
+        \For{i=1 to no. of iterations}
+            \State Bisect the cluster using 2-Means.
+        \EndFor
+        
+    \Until{The list of clusters is of size = K.}
+    \State Select the pair of clusters with lowest SSE and add to the list of clusters.
+\end{algorithmic}
+\end{algorithm}
+
+Compared to regular K-means, this variant is much less susceptible to initialization problems, since it performs several "trial" bisections (lines 4-6 in the pseudocode above) before choosing the output with the lowest SSE. On the other side, it may be time consuming, since it may split the data into singleton clusters, which are also pretty much meaningless. By recording the sequence of clusterings produced by the algorithm, we can use it to produce a hierarchical clustering.
+
+\subsection{X-means}
+
+X-means is another variant of K-means that exploits the \textbf{Bayesian Information Criterion (BIC)} score as a splitting strategy.
+
+\BoxDef{Bayesian Information Criterion (BIC)}{
+The BIC score of a data collection is calculated as:
+\begin{equation*}
+    BIC(M_j) = l_j (D) - \dfrac{p_j}{2} \log R \, ,
+\end{equation*}
+where $l_j (D)$ is the log-likelihood of the dataset $D$, and estimates how close to the centroid are the points in each cluster. $p_j$ is a function of the number of independent parameters, $R$ is the number of points in a cluster, and $M$ is the number of dimensions.
+}
+
+\begin{algorithm}
+\caption{X-means algorithm.}
+\begin{algorithmic}[1]
+    \For{k in range $[r_1$, $r_{max}]$}
+        \State Run K-means with current k.
+        
+        \State Recursively split each cluster in two with Bisecting 2-Means; use local BIC to decide whether to keep the split. Stop if local BIC is not respected or no. of clusters is higher than $r_{max}$.
+
+        \State Store current configuration with global BIC calculated on the whole clustering.
+    \EndFor
+    \State Return the best model w.r.t. global BIC.
+\end{algorithmic}
+\end{algorithm}
+
+The BIC measures the improvement of the cluster structure between a cluster and its children (as in, the two new cluster that would be produced); if the BIC of the parent is less than the BIC of the children, the bisection is accepted.
+
+\section{Hierarchical clustering}
+
+Hierarchical clustering techniques are an important category of clustering methods. They can be divided in:
+
+\begin{itemize}
+    \item \textbf{Agglomerative hierarchical clustering}: start with the points as individual clusters, then merge the closest pair.
+
+    \item \textbf{Divisive hierarchical clustering}: start with one big, all-inclustive cluster, then split it into smaller clusters until only individual points remain.
+\end{itemize}
+
+The first group is most commonly used.
+
+A hierarchical clustering can be graphically displayed by using a \textbf{dendrogram}, which is a tree-like graph that displays the order in which the clusters were merged (agglomerative) or split (divisive).
+
+\begin{algorithm}
+\caption{Agglomerative hierarchical clustering algorithm.}
+\begin{algorithmic}[1]
+    \State Compute the proximity matrix.
+
+    \Repeat
+        \State Merge the closest two points.
+        \State Update the proximity matrix to reflect the proximity between the new cluster and the original cluster.
+    \Until{Only one cluster remains.}
+\end{algorithmic}
+\end{algorithm}
+
+The key issue is defining proximity between clusters. Common measures include:
+
+\begin{itemize}
+    \item \textbf{MIN or single link}: defines the proximity between clusters as the distance of the closest two points that are in different clusters. It can handle non-elliptical shaped clusters, but it's sensitive to noise and outliers;
+
+    \item \textbf{MAX or complete link or CLIQUE}: defines the proximity between clusters as the maximum distance between two points that are in different clusters. It's resistant to noise and outliers, but performs poorly for non globular clusters and tends to break them apart when too large;
+
+    \item \textbf{Group average}: defines the proximity as the average distances of all possible pairs of points from different clusters. The trade-off between MIN and MAX, is not too affected by noise and outliers, but still tends to be biased towards globular clusters;
+
+    \item \textbf{Distance between centroids};
+
+    \item \textbf{Measure guided by an objective function}: an example is \textbf{Ward's method}, which measures the proximity between two clusters in terms of increase of SSE as a result of merging those clusters. Also influenced very little by noise and outliers, but biased towards globular clusters.
+\end{itemize}
+
+This clustering algorithm does not assume a particular number of clusters, since the ``desired'' number can be obtained by simply cutting the dendrogram at the appropriate height. 
+
+\subsection{Complexity}
+
+The algorithm needs a proximity matrix; this requires storage of $\frac{1}{2} m^2$ proximities (assuming the proximity matrix is symmetric and can be halved), where $m$ is the number of data points. The space to keep track of the clusters is proportional to the number of clusters, which is $m-1$, excluding singleton ones. The total \textbf{space complexity} is $O(m^2)$.
+
+The time needed to calculate the proximity matrix takes $O(m^2)$ time. Then, there's $m-1$ iterations of the main loop; at the$i^{th}$ iteration, step 3 (merging) has a cost of $O((m-i+1)^2)$ time, and step 4 (updating the proximity matrix) has a cost of $O(m-i+1)$ time. The total \textbf{time complexity} is $O(m^3)$.
+
+\section{DBSCAN}
+
+Density-based clustering separates regions with high density from regions with low density. A popular density-based clustering algorithm is DBSCAN.
+
+Density is estimated for a particular point in the dataset by counting the number of neighbors within a specified radius ($Eps$) of that point, including the point itself. Fixed a value of $MinPts$, each point is then classified as one of the following:
+
+\begin{itemize}
+    \item \textbf{Core point}: a point that is in the interion of a density based cluster. It has $MinPts$ or more points within $Eps$ distance.
+
+    \textbf{Border point}: a point that is not a core point, but is inside the neighborhood of one.
+
+    \textbf{Noise point}: a point that is neither core nor border, so it has few points close by and is far away enough from core points of all clusters.
+\end{itemize}
+
+The following is the algorithm pseudocode.
+
+\begin{algorithm}
+\caption{DBSCAN algorithm.}
+\begin{algorithmic}[1]
+    \State Label points as core/border/noise.
+    \State Eliminate noise points.
+    \State Connect with an edge core points within a distance $\leq Eps$.
+
+    \State Make each connected group into a cluster.
+    \State Assign each border point to the cluster its associated core point belongs to.
+\end{algorithmic}
+\end{algorithm}
+
+There's the issue of determining the value of $Eps$ and $MinPts$. The basic approach is to look at the distance between a point and its $k^{th}$ nearest neighbor, called $k$-dist. For points that belong to a cluster, $k$-dist will be small if $k$ is smaller than the cluster size, since the point will be in a dense area. For points that are outside of clusters, instead, the $k$-dist will be pretty large. If we compute the $k$-dist of all points in the dataset for some $k$, sort them in increasing order, and plot the result, we expect to see a sharp turn (a so called "knee") in the value of $k$-dist. The value at which this turn happens can be chosen as $Eps$, and the value of $k$ as $MinPts$. This way, points for which $k$-dist is less than $Eps$ will be core points, while all others will be either border or noise points.
+
+The value of $k$ itself should be neither too small, since small numbers of points close together may be considered a cluster, nor too high, because smaller clusters may be labeled as noise.
+
+Since DBSCAN defines cluster on the basis of density, it's resistant to noise, and can handle irregularly shaped clusters. On the other hand, it does not perform well if the data presents wildly varying densities, or in case of high dimensional data.
+
+\subsection{Complexity}
+
+The \textbf{time complexity} of the algorithm is $O(m t)$, where $m$ is the number of points, and $t$ is whatever time is needed to find the points in the $Eps$ neighborhood of a generic point. In the worst case, the complexity is $O(m^2)$, although usage of certain data structures for efficient retrieval of points within a given distance of a specified point for low-dimensional spaces can lower the average case complexity to $O(m \log(m))$.
+
+The \textbf{space complexity} is $O(m)$, since it only needs to store a little amount of data per data point (cluster label and classification of the point as core, border, or noise).
+
+\subsection{OPTICS}
+
+OPTICS (Ordering Points To Identify the Clustering Structure) is a variant of DBSCAN that addresses its main disadvantages. It produces an ordering of the dataset with respect to its density based clustering structure. It requires $Eps$ and $MinPts$ as parameters. Two distances are defined for each point $p$:
+\begin{itemize}
+    \item The \textbf{core distance}, which is the minimum value of radius required to classify the point as a core one. If $p$ is not a core one, this distance is undefined;
+
+    \item The \textbf{reachability distance}, between $p$ and another point $q$ in the dataset, defined as the maximum between the core distance of the point $p$ and the distance between $p$ and $q$. It's not defined if $q$ is not a core point.
+\end{itemize}
+
+\begin{algorithm}
+\caption{OPTICS algorithm.}
+\begin{algorithmic}[1]
+    \State Initialize the reachability distance of all points as undefined.
+
+    \For{each unprocessed point $p$}
+        \State Get the neighborhood $N$ of $p$.
+        \State Mark $p$ as processed and add to the output list.
+
+        \If{$p$ is a core point}
+            \State Initialize a priority queue $Q$ to get the closest point to $p$ in terms of reachability.
+
+            \State Call \texttt{update(N,p,Q)}.
+
+            \For{each point $q$ in $Q$}
+                \State Get the neighborhood $N'$ of $q$.
+                \State Mark $q$ as processed and add to the output list.
+
+                \If{$q$ is a core point}
+                    \State Call \texttt{update(N',q,Q)}.
+                \EndIf
+            \EndFor
+        \EndIf
+    \EndFor
+
+    \State Output the ordered list of points.
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{\texttt{update()} function.}
+\begin{algorithmic}[1]
+    \State Calculate the core distance for $p$.
+
+    \For{each $q$ in $N$}
+        \If{$q$ is not processed}
+            $new\_rd$ = reachability distance between $p$ and $q$.
+        \EndIf
+
+        \If{$q$ is not in $Q$}
+            \State Insert the pair $<q,new\_rd>$ in $Q$.
+        \Else
+            \If{$new\_rd<q\_rd$}
+                \State Move $q$ up in the queue $Q$ by updating $q\_rd$.
+            \EndIf
+        \EndIf
+    \EndFor
+\end{algorithmic}
+\end{algorithm}
+
+The algorithm produces a list of points, each annotated with their smallest reachability distance. To visualize the result, a reachability plot can be used, which is a special kind of dendrogram. Points belonging to a cluster will have low reachability distance to their neighbor, and they will form a valley in the plot: the deeper the valley, the denser the cluster.
+
+Clusters can be then extracted by selecting a threshold on the y-axis or a range on the x-axis after visual inspection. Alternatively, specific algorithms can be used to detect valleys depending on steepness, knee detection, or local minima.
+
+Both core distance and reachability distance may be undefined in the case of no sufficiently dense clusters with respect to the chosen $Eps$ value. If $Eps$ is large enough this won't happen, but in an extreme case $Eps$ may be so high that any $Eps$ neighborhood query returns the whole dataset. $Eps$ itself is not necessary to OPTICS, but it's still important to use it to cut off the density of clusters that are not interesting and potentially speed up the algorithm.
+
+\section{Cluster Validity}
+
+Once we used an algorithm to produce a clustering of the data, we need some way to evaluate the "goodness" of it. Some aspects of cluster validation are:
+
+\begin{itemize}
+    \item Determining the \textbf{clustering tendency} of a dataset, as in, distinguishing wether there's an actual structure in the data;
+
+    \item Comparing the results of algorithms to externally known ones;
+
+    \item Evaluating how well the results fit the data even in the absence of external data;
+
+    \item Comparing two or more results to determine which is better;
+
+    \item Determining the ideal number of clusters.
+\end{itemize}
+
+Note that all except for one don't need external information, so they can be performed unsupervised, and the last one can be performed both supervised and unsupervised.
+
+The \textbf{evaluation measures (or indices)} used to judge different aspects of cluster validity can be classified into three types:
+
+\begin{itemize}
+    \item \textbf{Unsupervised/internal indices}: measure the goodness of the clustering without respect to external information. An example is the SSE.
+    This group is also often divided into two subgroups, one containing measures of \textbf{cluster cohesion}, one containing measures of \textbf{cluster separation}. The first group measures how closely related the objects in a cluster are to each other, the second measures how separated a cluster is from the others.
+
+    \item \textbf{Supervised/external indices}: measure the goodness of the clustering by checking how much it matches some external structure. An example is entropy, which measures how well cluster labels match externally provided class labels.
+
+    \item \textbf{Relative}: compare different clusterings or clusters, so they produce a relative evaluation. They are not an actual separate group of measures, but a different way of using them. Two clusters can be evaluated with respect to one another by using SSE or entropy, for example.
+\end{itemize}
+
+Sometimes, these measures are also referred to as \textbf{criteria}.
+
+\subsection{Internal Measures}
+
+\subsubsection{Cohesion and separation}
+
+Many internal measures are based on the notions of \textbf{cohesion} and \textbf{separation}. These measures are also called proximity graph-based. Cluster cohesion is the sum of the weights of all the links within a cluster, while separation is the sum of the weights between nodes in the cluster and the nodes outside of the cluster.
+
+Cohesion can be calculated as:
+\begin{equation*}
+    SSE = WSS = \sum_i \sum_{x \in C_i} (x-m_i)^2 \, ,
+\end{equation*}
+while separation can be calculated as:
+\begin{equation*}
+    BSS = \sum _i |C_i|(m-m_i)^2 \, .
+\end{equation*}
+
+The validity of the clustering is calculated as:
+\begin{equation*}
+    validity = \sum_{i=1}^K w_i validity(C_i) \, ,
+\end{equation*}
+where the $validity()$ function can be cohesion, separation, or a combination of the two. The weights will vary depending on the measure used; sometimes they'll all be equal to 1 or $K$, other measures may set them in different, more complex, ways.
+
+\subsubsection{Similarity Matrix}
+
+This is a method that allows us to graphically assess the quality of a clustering. If we order a similarity matrix by cluster labels and plot it, in theory, if we have well separated clusters, the result will be a block-diagonal matrix. If not, the patterns displayed can still reveal relationships between clusters.
+
+\subsubsection{Correlation}
+
+If we have the distance/similarity matrix of a dataset, and the cluster labels produces by our cluster analysis, we can evaluate the goodness of the clustering by looking at the \textbf{correlation} between the matrix and an ideal version of it produced by looking at the cluster labels.
+
+More specifically, an ideal cluster is one whose points all have a similarity of 1 to all the other points in the same cluster, and a correlation of 0 to all the points in other clusters. If we sort the rows and columns of the similarity matrix so that all objects belonging to the same cluster are close together, the ideal cluster similarity matrix will have a block diagonal structure. This means that the similarity is non-zero in the blocks of the similarity matrix whose entries represent intra-cluster similarity, and 0 elsewhere. The ideal cluster similarity matrix is then constructed by creating a matrix with one row and one column per data point, and associating 1 to an entry if the corresponding pair of points are grouped in the same cluster, 0 otherwise.
+
+If the two matrices have high correlation, it means that points belonging to the same cluster are close, while low correlation indicates the opposite.
+
+The correlation is calculated only among $\frac{n(n-1)}{2}$ entries, since both matrices are symmetric.
+
+\subsubsection{Silhouette Coefficient}
+
+The popular method of silhouette coefficients combines both cohesion and separation. It can be used for individual poits, clusters, or clusterings.
+
+The steps to calculate the silhouette coefficient for a points are the following (by using distances, but similarities can be used as well):
+
+\begin{enumerate}
+    \item For the $i^{th}$ object, calculate its average distance to all other object in the same value; call this value $a_i$.
+
+    \item For the $i^{th}$ cluster and for any cluster not containing it, calculate the average distance between the point an all the objects in a given cluster. Find the minimum of these averages with respect to all clusters; call this value $b_i$.
+
+    \item For the $i^{th}$ object, the silhouette coefficient is $s_i = \frac{b_i - a_i}{max(a_i,b_i)}$.
+\end{enumerate}
+
+Thus, the value of the coefficient varies between -1 and 1. A negative value is not desirable, since it would mean $a_i$ is greater than $b_i$, so the point tends to be further away from points of its own cluster than external ones. We ideally want the coefficient to be positive, and $a_i$ to be as close to 0 as possible.
+
+The silhouette coefficient of a whole cluster can be calculated as the average of the coefficients of all the points in the cluster. A measure of the goodness of a clustering can then be obtained by calculating the average coefficient over all the points in the dataset.
+
+\subsubsection{SSE}
+
+SSE can be used to estimate the "goodness" of more complex datasets, with irregularly shaped clusters. It can also be used to compare two clusters or clusterings by comparing their average SSE.
+
+The SSE can also be used to estimate the number of clusters: if we plot the SSE versus the number of clusters obtained by executing an algorithm multiple times, we will likely see a distinct knee in the curve that corresponds to the ideal number of clusters to divide the data into. This can also be done with the silhouette coefficient, by looking at peaks instead of knees.
+
+\subsection{External Measures}
+
+TODO
