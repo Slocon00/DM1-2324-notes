@@ -532,7 +532,53 @@ From this chart, we can derive an economical value plot; e.g., given a predictiv
 
 \subsection{Underfitting and Overfitting}
 
+As of now, we considered algorithms that construct models with the lowest possible training error. In practice, however, if a model fits the data too much, it incurs into \textbf{overfitting}. Overfitting happens when the training error is very low, but the generalization error is high. This means that the model is too adapted to the training data (also said to be ``overtrained''), and cannot accurately predict unseen instances. \textbf{Underfitting} is the opposite phenomenon, when the model is not adapted enough to the training data, thus producing an also high generalization error. These phenomenons are controlled by the \textbf{complexity} of the model. Each model has a different way to measure this complexity. In the case of a K-NN classifier, the complexity is inversely proportional to the number of neighbors that make a neighborhood. For decision trees, the complexity is proportional to the depth of the tree.
 
+Another problem that can cause overfitting regardless of the training/validation procedure is the lack of sufficient training examples. The likelihood of incurring into overfitting is inversely proportional to the number of the available training instances. 
 
+\textbf{The course slides seem to imply that overfitting can be caused by the mere presence of noisy data. This is inexact; overfitting is caused by having a model so complex it adapts too much to noisy data, but the presence itself of noise should not be a concern given appropriate regularization.}
 
-\subsection{Cost of Classification}
+\subsection{Model Selection}
+
+Model selection is the phase in which the model's parameters and hyperparameters are chosen. This is done by using a training set along with a \textbf{validation} set (containing instances selected from the training set). The model is first set up with some starting values of parameters and hyperparameters. The model is trained on the training set, and the generalization error is estimated by the error calculated on the validation set. After a model with an acceptable validation error is selected, its quality is assessed using the test set instances.
+
+There's many ways to divide the data to perform training, validation, and testing. The simplest way is \textbf{hold-out}, in which the training set is split into three partitions, one for testing, one for validation, and one for testing. This technique, however, ``wastes'' the data as only some of it can be used for each step. Another technique is \textbf{k-fold cross validation} (it can be used for testing as well, either in combination with hold-out, or with cross-validation). The dataset $D$ is split into $k$ partitions; then, for each partition $D_i$, training is done using $D / D_i$, and validation is performed using $D_i$ only. This way, testing and validation is repeated multiple times with different data, obtaining a more accurate estimation of the generalization error.
+
+To select the final model, the strategy used is inspired by \textbf{Occam's razor/principle of parsimony}: when presented with two models with the same errors, the simpler model is preferred over the more complex one; again, we prefer simpler models because they're less likely to fall into overfitting. One way to estimate the generalization error of the model is:
+
+\begin{equation*}
+    R(Model) = R_{emp}(Model, TR) + \alpha Complexity(Model)
+\end{equation*}
+
+\subsection{Model Assessment}
+
+There's three ways to estimate the generalization error:
+\begin{itemize}
+    \item \textbf{Pessimistic estimate}: the generalization error rate is assumed to be worse than the training error rate;
+    \item \textbf{Optimistic/resubstitution estimate}: the generalization error rate is assumed to be the same as the training error rate;
+    \item \textbf{Reduced error pruning (REP)}: the generalization error rate is assumed to be the same as the validation error rate.
+\end{itemize}
+
+Let's consider error estimation for decision tree classifiers. The pessimistic error estimate for a decision tree $T$ with $k$ leaf nodes is:
+
+\begin{equation*}
+    R(T) = R_{emp}(T) + \omega \dfrac{k}{N_{train}} \,,
+\end{equation*}
+where $\omega$ is the cost of adding a leaf node, and $N_{train}$ is the number of training instances.
+
+The optimistic error estimation would simply be:
+\begin{equation*}
+    R(T) = R_{emp}(T)
+\end{equation*}
+
+\subsection{Addressing Overfitting in Decision Trees}
+
+A common regularization technique used for decision trees is \textbf{pre-pruning}, which is a form of early stopping. The training algorithm is stopped before the tree is fully formed, without necessarily having all leaf nodes with instances of one class only. We can set new conditions such as:
+\begin{itemize}
+    \item the number of instances is less than some user-defined threshold;
+    \item the class distribution of instances is indipendent from the available features (e.g. tested using a $\chi^2$ test);
+    \item the current node does not improve impurity measures;
+    \item the estimated generalization error falls below a certain acceptable threshold.
+\end{itemize}
+
+Alternatively, we can employ \textbf{post-pruning}. The decision tree is grown in its entirety; then, nodes are trimmed from the bottom. If a trimming improves the generalization error, it's accepted, replacing the pruned subtree with a single leaf. The label corresponding to the leaf is chosen as the majority class of instances in the subtree.
