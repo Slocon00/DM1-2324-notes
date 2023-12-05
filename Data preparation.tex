@@ -48,14 +48,14 @@ The main techniques of dimensionality reduction include:
     \item \textbf{Singular Value Decomposition (SVD)}: a linear algebra technique that is related to PCA.
 \end{itemize}
 
-\subsubsection{}{PCA}
+\subsubsection{PCA}
 Variance and covariance are key factors in constructing PCA. \textbf{Variance} measures the spread of a set of points from the mean, while \textbf{covariance} is a measure of how much each of the dimensions vary from the mean with respect to each other. SO, covariance is measured between two dimensions to see if there's a relationship. The covariance between a dimension and itself is the variance.
 
 The first principal component is the dimension with the largest possible variance in the dataset. The second principal one is calculated in the same way, with the condition that it is uncorrelated with the first principal component and also accounts for the next highest variance.
 
 \subsection{Feature subsection selection}
 
-Another way ofreducing the dimensionality of the dataset is to only select a subset of the features; this technique is used in the presence of redundant features and irrelevant features. \textbf{Redundant features} duplicate much or all information contained in one or more attributes. \textbf{Irrelevant features} contain almost to no useful information for the task at hand.
+Another way of reducing the dimensionality of the dataset is to only select a subset of the features; this technique is used in the presence of redundant features and irrelevant features. \textbf{Redundant features} duplicate much or all information contained in one or more attributes. \textbf{Irrelevant features} contain almost to no useful information for the task at hand.
 
 While some irrelevant or redundant features can be removed by simply using commons sense or domain knowledge, sometimes a more systematic approach is needed. The simplest approach is to try all possible subsets of features as input to the algorithm we want to use, and take the one that produces the best output. However, the number of subsets involving $n$ attributes would be $2^n$, so this approach is often very impractical. There are three standard approaches used for feature selection, explained below.
 
@@ -64,7 +64,7 @@ While some irrelevant or redundant features can be removed by simply using commo
 
     \item \textbf{Filter approaches}: features are selected before the algorithm is run, using an approach independent from the task that uses the significance and correlation between attributes to do the selection.
 
-    \item \textbf{Wrapper approaches}: these methods use the target data mining algorithm as a black box o find the best subset, similarly to the bruteforce approach described above, but without enumerating all subsets. Some techniques include selecting the top-ranked features, selecting the top ranked subset, forward selection (starting with an empty subset, add one feature at a time, then yield the one with the best improvement), backward elmination (start with the full set of features, remove one by one, remove completely the one the yields the least decrease in performance).
+    \item \textbf{Wrapper approaches}: these methods use the target data mining algorithm as a black box o find the best subset, similarly to the brute-force approach described above, but without enumerating all subsets. Some techniques include selecting the top-ranked features, selecting the top ranked subset, forward selection (starting with an empty subset, add one feature at a time, then yield the one with the best improvement), backward elimination (start with the full set of features, remove one by one, remove completely the one the yields the least decrease in performance).
 \end{itemize}
 
 \subsection{Feature creation}
@@ -72,9 +72,9 @@ While some irrelevant or redundant features can be removed by simply using commo
 It's also possible to create new features starting from existing ones that are capable of capturing the important information better. The final number of attributes can be smaller than the starting one, reducing the dimensionality as well. There are two general methodologies to do feature creation:
 
 \begin{itemize}
-    \item \textbf{Feature construction/extraction}: the new hiher-level features are created by combining the original features. This is a highly domain-specific technique. An example of feature construction may be the following: a dataset where each object has attributes \textit{mass} and \textit{volume}, we can combine them to construct the attribute \textit{density = mass / volume}, and remove the previous two attributes.
+    \item \textbf{Feature construction/extraction}: the new higher-level features are created by combining the original features. This is a highly domain-specific technique. An example of feature construction may be the following: a dataset where each object has attributes \textit{mass} and \textit{volume}, we can combine them to construct the attribute \textit{density = mass / volume}, and remove the previous two attributes.
 
-    \item \textbf{Feature projection}: the data is mapped to a new space with lower dimensionality. This mapping may be linear or noninear, and can be achieved with many approaches, such as PCA, SVD, non-negative matrix factorization (NMF), linear discrimination analysis (LDA), and autoencoder.
+    \item \textbf{Feature projection}: the data is mapped to a new space with lower dimensionality. This mapping may be linear or nonlinear, and can be achieved with many approaches, such as PCA, SVD, non-negative matrix factorization (NMF), linear discrimination analysis (LDA), and autoencoders.
 \end{itemize}
 
 \subsection{Data cleaning}
@@ -95,7 +95,7 @@ Some algorithms may specifically require that the data be in the form of categor
 
 Discretization is often used for attributes that are used in classification or association analysis. Transformation of a continuous attribute to a categorical one can be divided into two tasks: in the first one, the values of that attribute are sorted and divided into $n$ intervals by specifying $n-1$ split points; in the second step, all the values of one interval are mapped to the same categorical value. The problem consists in deciding how many split points to insert, and where to place them.
 \begin{itemize}
-    \item \textbf{Unsupervised discretization}: class information is not used: there's no labels for the instances, and the number of overall classes is unknown. The most common approaches are \textbf{natual binning}, \textbf{equal frequency binning}, and \textbf{statistical binning}.
+    \item \textbf{Unsupervised discretization}: class information is not used: there's no labels for the instances, and the number of overall classes is unknown. The most common approaches are \textbf{natural binning}, \textbf{equal frequency binning}, and \textbf{statistical binning}.
 
     If the number of final groups is too little, there is loss of information; if it's too high, there's too much dispersion in the data. The optimal number of classes to divide $N$ elements can be calculated as:
 
@@ -112,7 +112,7 @@ Discretization is often used for attributes that are used in classification or a
     \item \textbf{Supervised discretization}: class information is known. The most common approaches are \textbf{entropy-based}, and \textbf{based on percentiles}.
 \end{itemize}
 
-Binarization is often used for association analysis tasks. A simple technique to binarize a categorical attribute is the following: if there are $m$ categorical values, assign each value to an integer  in the interval $[0, m-1]$. If the attribute is ordinal, order must be maintained by the assignment. Next, convert each of these $m$ integers to binary values: since $n = \lceil log_2(m) \rceil$ binary digits are used to represent these integers, represent these binary numbers using $n$ new binary attributes.
+Binarization is often used for association analysis tasks. A simple technique to binarize a categorical attribute is the following: if there are $m$ categorical values, assign each value to an integer  in the interval $[0, m-1]$. If the attribute is ordinal, order must be maintained by the assignment. Next, convert each of these $m$ integers to binary values: since $n = \lceil \log_2(m) \rceil$ binary digits are used to represent these integers, represent these binary numbers using $n$ new binary attributes.
 
 \subsection{Attribute/Variable transformation}
 

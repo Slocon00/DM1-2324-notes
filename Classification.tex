@@ -21,7 +21,7 @@ If it's a classification task, the output will correspond to the majority vote. 
 \end{equation*}
 Or, in the case of multiple classes:
 \begin{equation*}
-    h(x) = argmax_v \sum_{x_i \in N_k(x)} 1_{v,y_i}  \, ,
+    h(x) = \arg \max_v \sum_{x_i \in N_k(x)} 1_{v,y_i}  \, ,
 \end{equation*}
 \begin{equation*}
     1_{v,y_i} = \begin{cases}
@@ -47,7 +47,7 @@ while the one for regression becomes:
     h(x) = \frac{1}{k}\sum_{x_i \in N_k(x)} \dfrac{y_i}{d(x,x_i)^2} \, .
 \end{equation*}
 
-The main issue of K-NN is that it's subsceptible to the curse of dimensionality: as the number of dimensions in the data increases, the density of the points decreases, therefore estimation of new inputs will be less and less accurate as it won't be as local anymore. K-NN is also sensitive to scaling, since it deals with distances.
+The main issue of K-NN is that it's susceptible to the curse of dimensionality: as the number of dimensions in the data increases, the density of the points decreases, therefore estimation of new inputs will be less and less accurate as it won't be as local anymore. K-NN is also sensitive to scaling, since it deals with distances.
 
 The main advantages of K-NN are that it's very simple to implement, and can be easily "retrained" by adding or removing instances. It can also create decision boundaries of any shape. The main disadvantages are (other than the ones explained above) that since it's a lazy learner, it needs all the data to be available to make an estimation, so it's very demanding in terms of space needed, as well as computational time, since estimating an output has a complexity of $O(ln)$ (where $l$ is the number of instances and $n$ is the number of dimensions). It also does not handle missing values.
 
@@ -109,7 +109,7 @@ The learning algorithm finds the posterior probability for any possible couple o
 \begin{equation*}
     P(X=x|Y=y) = \prod_i P(X_i = x_i|Y=y) \, ,
 \end{equation*}
-where each $X_i$ is a different attribute of the record $X$. In practice, this means that the attributes are only influenced by the target class, and if we know the class label, the atributes are independent of each other. In general, given three variables $X_1$, $X_2$, and $Y$, we say that $X_1$ is conditionally independent of $X_2$ given $Y$ if:
+where each $X_i$ is a different attribute of the record $X$. In practice, this means that the attributes are only influenced by the target class, and if we know the class label, the attributes are independent of each other. In general, given three variables $X_1$, $X_2$, and $Y$, we say that $X_1$ is conditionally independent of $X_2$ given $Y$ if:
 
 \begin{equation*}
     P(X_1 | X_2,Y) = P(X_1|Y) \, .
@@ -154,7 +154,7 @@ Here, $v$ is the total number of attribute values that $X$ can take. $p$ is an i
 
 Summing up, Naïve Bayes Classifiers:
 \begin{itemize}
-    \item are robust to isolated noise points since they don't significantly influence the conditional probability estiamtes;
+    \item are robust to isolated noise points since they don't significantly influence the conditional probability estimates;
     \item can easily compute probabilities even in high-dimensional spaces, provided attributes are actually conditionally independent of each other giver the class labels;
     \item can handle missing values in both training and test instances, by simply ignoring them.
     \item are robust to irrelevant attributes, because if $X$ is an irrelevant attribute, then $P(X=x|Y=y)$ becomes almost uniformly distributed.
@@ -256,9 +256,9 @@ This algorithm has a complexity of $O(nlog(n))$.
 
 \BoxDef{Entropy}{
 \begin{equation*}
-    Entropy = - \sum_{i=0}^{c-1} p_i(t) log_2 (p_i(t))
+    Entropy = - \sum_{i=0}^{c-1} p_i(t) \log_2 (p_i(t))
 \end{equation*}
-Maximum: $log_2(c)$ \hfill Minimum: $0.0$
+Maximum: $\log_2(c)$ \hfill Minimum: $0.0$
 }
 
 The entropy is used the same way as the Gini index: the lower the value, the better the split.
@@ -281,7 +281,7 @@ In the C4.5 algorithm, a measure known as \textbf{gain ratio} is used, which com
 \BoxDef{Gain ratio}{
 The gain ratio is calculated as:
 \begin{equation*}
-    Gain \; ratio = \dfrac{Gain}{Split \; info} = \dfrac{Entropy(p) - \sum_{i=1}^k \dfrac{N(v_i)}{N} Entropy(v_i)}{- \sum_{i=1}^k \dfrac{N(v_i)}{N} log_2(\dfrac{N(v_i)}{N})}
+    Gain \; ratio = \dfrac{Gain}{Split \; info} = \dfrac{Entropy(p) - \sum_{i=1}^k \dfrac{N(v_i)}{N} Entropy(v_i)}{- \sum_{i=1}^k \dfrac{N(v_i)}{N} \log_2(\dfrac{N(v_i)}{N})}
 \end{equation*}
 where $N(v_i)$ is the number of instances assigned to node $v_i$, and $k$ is the total number of splits.
 }
@@ -452,7 +452,7 @@ Accuracy is proportional to cost if $TP = TN = p$ and $FP = FN = q$; accuracy wo
     = tot(q - (q-p)Accuracy).
 \end{align*}
 
-If we have a multiclass classifier, then we calculate each measure for a single class ata a time against all others. So, for example, if we have 3 classes A, B, and C, a false positive for A happens if the classifier identifies an element of either B or C as belonging to A.
+If we have a multiclass classifier, then we calculate each measure for a single class at a time against all others. So, for example, if we have 3 classes A, B, and C, a false positive for A happens if the classifier identifies an element of either B or C as belonging to A.
 
 \subsection{Methods for Performance Evaluation}
 
@@ -479,12 +479,12 @@ A better technique is \textbf{K-fold cross validation}. The dataset is partition
 
 \subsubsection{ROC Curve}
 
-Assessing the performance of a classifier over a range of score thresholds is called \textbf{aggregate evaluation} of performance. One of the widely used tools for aggregate evaluation is the \textbf{Receiver Operating Characteristic (ROC) curve}. A ROC curve is a graphical approach to visualize the tradeoff between TPR (true positive rate, plotted in the y axis) and FPR (false positive rate, plotted on the x axis) of a classifier. It shows he ability of a binary classifier as the discrimination threshold is varied, so each point corresponds to a different threshold value.
+Assessing the performance of a classifier over a range of score thresholds is called \textbf{aggregate evaluation} of performance. One of the widely used tools for aggregate evaluation is the \textbf{Receiver Operating Characteristic (ROC) curve}. A ROC curve is a graphical approach to visualize the trade off between TPR (true positive rate, plotted in the y axis) and FPR (false positive rate, plotted on the x axis) of a classifier. It shows he ability of a binary classifier as the discrimination threshold is varied, so each point corresponds to a different threshold value.
 
 The following procedure describes the generic approach for computing a ROC curve:
 
 \begin{enumerate}
-    \item Sort the test instances in increasing order of their scores (posterior probability calculated using some other classifier).
+    \item Sort the test instances in increasing order of their scores (can be posterior probability calculated using some other classifier).
 
     \item Select the lowest ranked test instance (with the lowest score), and assign that instance and all the ones ranked higher to the positive class. Since all the positive instances are classified correctly and all negative one are misclassified, $TPR = FPR = 1$.
 
@@ -495,7 +495,7 @@ The following procedure describes the generic approach for computing a ROC curve
     \item Plot the TPR against the FPR.
 \end{enumerate}
 
-A perfect model with 0 misclassifications would have $FPR = 0$ and $TPR = 1$. To summarize the aggreagate behaviour across all operating points, one of the most commonly used measures is the \textbf{area under the ROC curve (AUC)}. If the classifier is perfect, the AUC is equal to 1. If the classifier is bad, and behaves as a random guesser, the AUC will be 0.5.
+A perfect model with 0 misclassifications would have $FPR = 0$ and $TPR = 1$. To summarize the aggregate behaviour across all operating points, one of the most commonly used measures is the \textbf{area under the ROC curve (AUC)}. If the classifier is perfect, the AUC is equal to 1. If the classifier is bad, and behaves as a random guesser, the AUC will be 0.5.
 
 Note that when comparing different models using AUC, we cannot say that a model is better than another for simply having an higher AUC (unless the difference is drastic enough). Consider the ROC curves for the models $M_1$ and $M_2$ pictured below:
 
@@ -576,7 +576,7 @@ The optimistic error estimation would simply be:
 A common regularization technique used for decision trees is \textbf{pre-pruning}, which is a form of early stopping. The training algorithm is stopped before the tree is fully formed, without necessarily having all leaf nodes with instances of one class only. We can set new conditions such as:
 \begin{itemize}
     \item the number of instances is less than some user-defined threshold;
-    \item the class distribution of instances is indipendent from the available features (e.g. tested using a $\chi^2$ test);
+    \item the class distribution of instances is independent from the available features (e.g. tested using a $\chi^2$ test);
     \item the current node does not improve impurity measures;
     \item the estimated generalization error falls below a certain acceptable threshold.
 \end{itemize}

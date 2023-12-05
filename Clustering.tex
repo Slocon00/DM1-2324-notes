@@ -7,7 +7,7 @@ The main reasons behind clustering analysis are:
 \begin{itemize}
     \item \textbf{Understanding}: identifying classes and groups of objects plays an important role in how people analyze the world. Humans are naturally efficient at finding clusters and classifying new data on the basis of the clusters found. Cluster analysis is also often referred to as \textbf{unsupervised classification} for this reason (as opposed to classic classification, which is supervised).
 
-    \item \textbf{Summarization}: if instead of applying an algorithm to the whole dataset, it is applied to (accurately defined) clusters, the efficiency of the excution may be increased. This is especially important for algorithms that have a complexity of $O(l^2)$, such as regression or component analysis.
+    \item \textbf{Summarization}: if instead of applying an algorithm to the whole dataset, it is applied to (accurately defined) clusters, the efficiency of the execution may be increased. This is especially important for algorithms that have a complexity of $O(l^2)$, such as regression or component analysis.
 \end{itemize}
 
 \section{Types of clusterings}
@@ -27,7 +27,7 @@ Clusterings are a collection of clusters.
 \section{Types of clusters}
 
 \begin{itemize}
-    \item \textbf{Well separated}: a cluster is a set of objects in which each object is closer (or more similar) to any other point in its cluster than to any point belonging to a different cluster. This idealistic definition of cluster is satisfied only when the data contains natual clusters that are all far apart from each other. These clusters can have any shape.
+    \item \textbf{Well separated}: a cluster is a set of objects in which each object is closer (or more similar) to any other point in its cluster than to any point belonging to a different cluster. This idealistic definition of cluster is satisfied only when the data contains natural clusters that are all far apart from each other. These clusters can have any shape.
 
     \item \textbf{Prototype-based and center-based}: a cluster is a set of objects in which each object is closer to the prototype that defines the cluster it belongs to than to any other prototype. For data with continuous attributes, the prototype is often a \textbf{centroid}, calculated as the mean of all points. If the centroid is not meaningful, for example if the attributes are categorical, a \textbf{medoid} is used instead; which is the most representative point in the cluster. For many types of data, the prototype is also the most central point; we refer to these clusters as \textbf{center-based clusters}.
 
@@ -153,7 +153,7 @@ Hierarchical clustering techniques are an important category of clustering metho
 \begin{itemize}
     \item \textbf{Agglomerative hierarchical clustering}: start with the points as individual clusters, then merge the closest pair.
 
-    \item \textbf{Divisive hierarchical clustering}: start with one big, all-inclustive cluster, then split it into smaller clusters until only individual points remain.
+    \item \textbf{Divisive hierarchical clustering}: start with one big, all-inclusive cluster, then split it into smaller clusters until only individual points remain.
 \end{itemize}
 
 The first group is most commonly used.
@@ -201,7 +201,7 @@ Density-based clustering separates regions with high density from regions with l
 Density is estimated for a particular point in the dataset by counting the number of neighbors within a specified radius ($Eps$) of that point, including the point itself. Fixed a value of $MinPts$, each point is then classified as one of the following:
 
 \begin{itemize}
-    \item \textbf{Core point}: a point that is in the interion of a density based cluster. It has $MinPts$ or more points within $Eps$ distance.
+    \item \textbf{Core point}: a point that is in the interior of a density based cluster. It has $MinPts$ or more points within $Eps$ distance.
 
     \textbf{Border point}: a point that is not a core point, but is inside the neighborhood of one.
 
@@ -367,7 +367,7 @@ The correlation is calculated only among $\frac{n(n-1)}{2}$ entries, since both 
 
 \subsubsection{Silhouette Coefficient}
 
-The popular method of silhouette coefficients combines both cohesion and separation. It can be used for individual poits, clusters, or clusterings.
+The popular method of silhouette coefficients combines both cohesion and separation. It can be used for individual points, clusters, or clusterings.
 
 The steps to calculate the silhouette coefficient for a points are the following (by using distances, but similarities can be used as well):
 
