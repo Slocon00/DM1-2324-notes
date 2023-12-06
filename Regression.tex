@@ -1,0 +1,87 @@
+\chapter{Regression}
+
+Another common supervised learning task is regression. While classification assigns to each instance a class (out of a finite set of classes), regression predicts a real-valued number.
+
+More formally: given a training set $<x_i, y_i>$ for some unknown target function $f$, regression is the task of learning $f$ by finding a good approximation; that is, one that minimizes the error. The error function can be expressed in many ways; some common functions are \textbf{absolute error}:
+\begin{equation*}
+    \sum_i |y_i - f(x_i)| \,,
+\end{equation*}
+and \textbf{squared error}:
+\begin{equation*}
+    \sum_i (y_i - f(x_i))^2 \,,
+\end{equation*}
+where $(y_i - f(x_i))$ is called \textbf{residual}.
+
+\section{Linear Regression}
+
+Linear regression models a linear relationship between a dependent variable $Y$ and a set of one or more independent variables $X$. The target function is expressed as a linear function:
+\begin{equation*}
+    f(x) = \sum_i^n a_i*x_i + b = a^T*x + b\,,
+\end{equation*}
+where $b$ is called \textbf{intercept} (or \textbf{bias}) and the vector $a$ is the \textbf{slope}. These are called free parameters. If we consider only one independent variable, the task is called \textbf{simple linear regression}, otherwise it's called \textbf{multiple linear regression}. For multiple correlated dependent variables, the task is called \textbf{multivariate linear regression}.
+
+The goal is to find some hypothesis (approximation of the target function $f$) that for each input instance returns the expected value for that input according to $f$. This approximation corresponds to the function $h$ that minimizes the error for each $x_i$ in the training set, i.e., it minimizes the residual $(y_i - h(x_i))$.
+
+There's many ways to find the values of $a$ and $b$ such that $h(x) = \sum_i a_i * x_i + b$ minimizes the error; one of the most common approaches is \textbf{gradient descent}. Since the error function is a simple convex function, it will certainly have a global minimum. By differentiating the error function in all $a_i$ and $b$ and setting it to 0, we can find the exact values of the free parameters that correspond to the minimum. Let's use the Least Squares method to minimize the error, calculated as the SSE, also known as \textbf{residual sum of squares}. The free parameters will be referred to as the weight vector $w$ from now on, to simplify notation:
+\begin{equation*}
+    E(w) = \sum_i^n (y_i - w^T*x_i))^2 
+\end{equation*}
+(here $b$ is incorporated into $w$ as $w_0$, and $x_0$ is assumed to be 1). The gradient of the error function for a generic $w_j$ is calculated as follows:
+\begin{gather*}
+    \dfrac{\partial E(w)}{\partial w_j} = \dfrac{\partial \sum_i^n (y_i - w^T*x_i))^2}{\partial w_j} = 2 \sum_i^n (y_i - w^T*x_i) \dfrac{\partial \sum_i^n (y_i - w^T*x_i))}{\partial w_j} = \\
+    2 \sum_i^n (y_i - w^T*x_i) (\dfrac{\partial \sum_i^n y_i}{\partial w_j} +\dfrac{\partial \sum_i^n w^T x_i}{\partial w_j}) = 2 \sum_i^n (y_i - w^T*x_i) ( 0 + \sum_i^n x_{i,j}) = \\
+    2 \sum_i^n (y_i - w^T*x_i) x_{i,j} \,,
+\end{gather*}
+where $x_{i,j}$ refers to the $j^{th}$ attribute of the $i^{th}$ example.
+
+By setting this to 0 for all $w_i$, we find that:
+\begin{gather*}
+    \dfrac{\partial E(w)}{\partial w_0} = \dfrac{\partial E(w)}{\partial b} = 2 \sum_i^n (y_i - w^T*x_i) = 2 \sum_i^n (y_i - a^Tx_i) - b = \\
+    2 \sum_i^n (y_i - a^Tx_i) - 2\sum_i^n b = \sum_i^n (y_i - a^Tx_i) - 2n*b = 0 \\
+    \Big\Updownarrow \\
+    b = \dfrac{\sum_i^n y_i - a^Tx_i}{n}
+\end{gather*}
+and:
+\begin{gather*}
+    a^T = \dfrac{n * \sum_i^n y_i x_i - \sum_i^n x_i \sum_i^n y_i}{n\sum_i^n (x^2) - (\sum_i^n x_i)^2} \,.
+\end{gather*}
+
+Linear regression can also benefit from regularization, a technique that controls training and forbids it from running into overfitting. A common regularization technique is called \textbf{Tikhonov regularization} (or also \textbf{ridge regression}), which is especially useful to mitigate multicollinearity. With regularization, the error function is calculated as:
+\begin{equation*}
+    E(w) = \sum_i^n (y_i - w^Tx_i)^2 + \lambda \|w\|_2^2 \,,
+\end{equation*}
+where $\lambda$ is called \textbf{learning rate}.
+If the residual becomes too low, the norm 2 of the weight vector will be high, so the training algorithm will decrease the values of the weights to minimize the overall error, thus reducing the complexity of the model and avoiding overfitting. Obviously, different values of $\lambda$ will affect training differently: if it's too low it may not regularize enough, if it's too high it may cause underfitting.
+
+Another common regularization is \textbf{lasso regularization}, which uses norm 1 instead:
+\begin{equation*}
+    E(w) = \sum_i^n (y_i - w^Tx_i)^2 + \lambda \|w\|_1 \,.
+\end{equation*}
+They function similarly, but lasso regularization in particular performs what's called \textbf{variable selection}, i.e., it tends to bring multiple free parameters to 0 instead of simply reducing them all in value (since norm 1 returns the sum of absolute values of the weights instead of their squared sum).
+
+As a closing paragraph to this section, here's a list of commonly used error functions:
+\begin{itemize}
+    \item \textbf{Coefficient of determination}:
+    \begin{equation*}
+        R^2(w) = 1 - \dfrac{\sum_i^n (w^Tx_i - y_i)^2}{\sum_i^n (y_i - \Bar{y})^2} \,, \Bar{y} = mean(y)
+    \end{equation*}
+
+    \item \textbf{Mean Squared Error}:
+    \begin{equation*}
+        MSE(w) = \dfrac{\sum_i^n (y_i - w^T x_i)^2}{n}
+    \end{equation*}
+
+    \item \textbf{Mean Absolute Error}:
+    \begin{equation*}
+        MAE(w) = \dfrac{\sum_i^n \|y_i - w^T x_i\|}{n}
+    \end{equation*}
+\end{itemize}
+
+
+\section{Non-linear Regression}
+
+For some collections of data, the relationship between $X$ and $Y$ may not be linear.
+
+A model that's often used for non-linear regression is K-Nearest Neighbors. It functions the same as for classification, but instead of returning the majority class of the neighborhood, it returns the average value. It can used with the weighted variant as well.
+
+Another model that can be used for regression is Decision Trees. The tree can be constructed with the same algorithms seen for classification, obviously using an appropriate error measure (such as MSE or MAE). Then, once a leaf is reached when calculating the value for a new instance, either the leaf is pure, so the only value present is chosen as the prediction, or else the average of the values of the instances within that leaf is chosen. 
