@@ -5,6 +5,7 @@
 \usepackage[dvipsnames]{xcolor}
 \usepackage{tikz}
 \usepackage[breakable]{tcolorbox}
+\appto{\bibsetup}{\raggedright}
 
 \tikzstyle{mybox} = [draw=Dandelion, fill=Dandelion!5, ultra thick, rectangle, rounded corners, inner sep=10pt, inner ysep=15pt, text width=0.90\textwidth, align=left] 
 \tikzstyle{boxtitle} = [fill=Dandelion, text=Brown, ultra thick, rectangle, rounded corners, inner sep=10pt, inner ysep=8pt, text width=0.90\textwidth]
@@ -56,5 +57,10 @@
 \input{Data similarity}
 \input{Clustering}
 \input{Classification}
+\input{Regression}
+
+\nocite{*}
+\bibliographystyle{plain}
+\clearpage\bibliography{bibliography}
 
 \end{document}
