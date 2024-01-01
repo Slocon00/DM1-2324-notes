@@ -15,7 +15,6 @@ The support count of an itemset $X$ is calculated as:
 \end{equation*}
 }
 In other words, the support count is the number of transactions that contain that itemset. Often, the property of interest is the support.
-
 \BoxDef{Support}{
 The support of an itemset $X$ is calculated as:
 \begin{equation*}
@@ -81,9 +80,7 @@ This principle also implies that if an itemset is infrequent, then all of its su
     \end{tabular}
 \end{table}
 
-Assuming a \textit{minsup} threshold of 0.6, the itemset $\{B,E,F\}$ is frequent. The itemsets $\{B,E\}$, $\{B,F\}$, and $\{E,F\}$ are frequent as well. Conversely, $\{A,B\}$ is not frequent, so any itemset obtained by adding items to it will also be infrequent.
-
-The Apriori property holds because of the \textbf{anti-monotone property} of the support measure.
+Assuming a \textit{minsup} threshold of 0.6, the itemset $\{B,E,F\}$ is frequent. The itemsets $\{B,E\}$, $\{B,F\}$, and $\{E,F\}$ are frequent as well. Conversely, $\{A,B\}$ is not frequent, so any itemset obtained by adding items to it will also be infrequent. The Apriori property holds because of the \textbf{anti-monotone property} of the support measure.
 
 \BoxDef{Anti-monotone property}{
 A measure $f$ possesses the anti-monotone property if for every itemset $X$ that is a proper subset of an itemset $Y$, it holds that $f(Y) \leq f(X)$.
@@ -139,7 +136,7 @@ Pruning removes all the candidate $k$-itemsets that contain at least one infrequ
 
 Support counting simply iterates over all the transactions in the dataset and increases the support count of the candidate itemsets contained into each of them. The brute-force approach to counting is to compare each transaction against every single candidate itemset, but, as always, this is computationally expensive.
 
-The method followed by Apriori exploits a prefix tree structure to find the candidates contained in a transaction. The root of the tree corresponds to the full transaction $t = \{ i_1, 1_2, \dots, \i_n \}$. Assuming that each itemset keeps its items always in increasing lexicographic order, an itemset can be enumerated by specifying the smallest item first, followed by the larger ones. So, given a transaction $t = \{ 1, 2, 3, 4, 5 \}$, all 3-itemsets can only start with either 1, 2, or 3. The root will have three children at level 1, one for each ``starting'' item. The same thing can be repeated to produce level 2. If 1 is the first item of the 3-itemset, it can be only followed by 2, 3, or 4, but not 5, since then it could not have a total of 3 items. The node that ``starts'' with 1 will have three children, the one that ``starts'' with 2 will have two children, and finally the node ``starting'' with 3 will only have one child. This process is repeated until all leaf nodes containing all possible $k$-itemsets contained in the transaction are reached. The support of all the itemsets found is simply increased by 1.
+The method followed by Apriori exploits a prefix tree structure to find the candidates contained in a transaction. The root of the tree corresponds to the full transaction $t = \{ i_1, 1_2, \dots, i_n \}$. Assuming that each itemset keeps its items always in increasing lexicographic order, an itemset can be enumerated by specifying the smallest item first, followed by the larger ones. So, given a transaction $t = \{ 1, 2, 3, 4, 5 \}$, all 3-itemsets can only start with either 1, 2, or 3. The root will have three children at level 1, one for each ``starting'' item. The same thing can be repeated to produce level 2. If 1 is the first item of the 3-itemset, it can be only followed by 2, 3, or 4, but not 5, since then it could not have a total of 3 items. The node that ``starts'' with 1 will have three children, the one that ``starts'' with 2 will have two children, and finally the node ``starting'' with 3 will only have one child. This process is repeated until all leaf nodes containing all possible $k$-itemsets contained in the transaction are reached. The support of all the itemsets found is simply increased by 1.
 
 Below is the prefix tree generated with the above example.
 
@@ -299,7 +296,7 @@ The main advantages of incorporating concept hierarchies into association analys
 
 To handle concept hierarchies, we can consider two approaches:
 \begin{itemize}
-    \item Extending the current association rule formation by adding higher level items to each transaction; i.e., $\{ whole\_milk, wheat\_bread \}$ becomes $\{ whole\_milk, wheat\_bread, milk, bread, food \}$. However, items at higher levels will have much higher support counts, and if the chosen $minsup$ threshold is too low, there will be too many frequent itemsets involving high-level items. Additionally, this approach increases the dimensionality of the data, making transactions actually longer.
+    \item Extending the current association rule formation by adding higher level items to each transaction; i.e., the transaction $\{ whole\_milk, wheat\_bread \}$ becomes $\{ whole\_milk, wheat\_bread, milk, bread, food \}$. However, items at higher levels will have much higher support counts, and if the chosen $minsup$ threshold is too low, there will be too many frequent itemsets involving high-level items. Additionally, this approach increases the dimensionality of the data, making transactions actually longer.
 
     \item Generating frequent patterns at highest levels first; then, generating frequent patterns at the next highest level lower than the previous one, and so on. While this method will surely find all patterns for all hierarchy levels, it's very costly as it passes multiple times over the data (once for each level), and does not capture cross-level association patters. 
 \end{itemize}

@@ -21,7 +21,7 @@ Clusterings are a collection of clusters.
 
     \item \textbf{Complete vs Partial}: a \textbf{complete clustering} assigns each object to a cluster, while a \textbf{partial clustering} does not; typically, it excludes noise and outliers that may erroneously influence the properties of the clusters during further analysis.
 
-    \item \textbf{Heterogeneous vs Homogeneous}: in \textbf{heterogeneous clustering}, all clusters have the same size/shape/density, while in \textbf{Homogeneous clustering} the cluster may differ.
+    \item \textbf{Heterogeneous vs Homogeneous}: in \textbf{homogeneous clustering}, all clusters have the same size/shape/density, while in \textbf{heterogeneous clustering} the cluster may differ.
 \end{itemize}
 
 \section{Types of clusters}
@@ -107,12 +107,13 @@ To choose the way this split is done at each iteration, we can consider the larg
     \Repeat
         \State Remove the cluster with higher SSE from the list.
 
-        \For{i=1 to no. of iterations}
+        \For{i=1 to no. of chosen trials}
             \State Bisect the cluster using 2-Means.
         \EndFor
+        \State Select the pair of clusters with lowest SSE and add to the list of clusters.
         
     \Until{The list of clusters is of size = K.}
-    \State Select the pair of clusters with lowest SSE and add to the list of clusters.
+    
 \end{algorithmic}
 \end{algorithm}
 
@@ -145,6 +146,40 @@ where $l_j (D)$ is the log-likelihood of the dataset $D$, and estimates how clos
 \end{algorithm}
 
 The BIC measures the improvement of the cluster structure between a cluster and its children (as in, the two new cluster that would be produced); if the BIC of the parent is less than the BIC of the children, the bisection is accepted.
+
+\subsection{Expectation Maximization}
+
+In order to understand the data, we assume that it can be described by a \textbf{generative process/model} that fits the data. We assume that this model is a distribution from which data points are sampled, but sometimes using only one distribution to describe all the data is not enough, or we don't knw the distribution. We need a \textbf{mixture model} that combine multiple distributions, each of which corresponds to a different cluster in the data.
+
+The algorithm that's presented in this section can be seen as the ``ancestor'' of K-means. This algorithm is called \textbf{Expectation Maximization (EM) algorithm}, which calculates the probability that each point belongs to a certain distribution, and then uses these probabilities to calculate a new estimate for the parameters that maximize the data likelihood.
+
+\begin{algorithm}
+\caption{Expectation Maximization algorithm.}
+\begin{algorithmic}[1]
+    \State Initialize the values of the parameters $\Theta$ to random values.
+
+    \Repeat
+        \State E-Step: given $\Theta$, estimate the membership probabilities.
+        \State M-step: given the membership probabilities, calculate the parameters $\Theta'$ that maximize the data likelihood.
+    \Until{Convergence is reached.}
+\end{algorithmic}
+\end{algorithm}
+
+The parallels between this algorithm and K-means are immediate: it starts with a random configuration of parameters (randomly choosing the centroids), then it enters a loop in which it first assigns each point to a distribution (assigning points to clusters based on the distance) and recalculates the parameters that maximize the data likelihood (recalculating the centroids as the ones that minimize SSE).
+
+\subsection{K-modes}
+
+K-modes is another clustering algorithm that's similar to K-means, but can be used for categorical attributes. The distance between two records is calculated as the number of mismatches between their attributes:
+
+\begin{gather*}
+    d(X,Y) = \sum_i \delta(x_i, y_i) \\
+    \delta(x,y) = \begin{cases}
+        0 & (x = y) \\
+        1 & else
+    \end{cases}
+\end{gather*}
+
+Another big difference is that it uses the mode as the representative object of a cluster instead of the mean, so it computes the frequency of each value of each attribute and finally chooses the one with the highest frequency.
 
 \section{Hierarchical clustering}
 
@@ -372,7 +407,7 @@ The popular method of silhouette coefficients combines both cohesion and separat
 The steps to calculate the silhouette coefficient for a points are the following (by using distances, but similarities can be used as well):
 
 \begin{enumerate}
-    \item For the $i^{th}$ object, calculate its average distance to all other object in the same value; call this value $a_i$.
+    \item For the $i^{th}$ object, calculate its average distance to all other object in the same cluster; call this value $a_i$.
 
     \item For the $i^{th}$ cluster and for any cluster not containing it, calculate the average distance between the point an all the objects in a given cluster. Find the minimum of these averages with respect to all clusters; call this value $b_i$.
 

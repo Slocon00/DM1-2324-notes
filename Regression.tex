@@ -1,8 +1,6 @@
 \chapter{Regression}
 
-Another common supervised learning task is regression. While classification assigns to each instance a class (out of a finite set of classes), regression predicts a real-valued number.
-
-More formally: given a training set $<x_i, y_i>$ for some unknown target function $f$, regression is the task of learning $f$ by finding a good approximation; that is, one that minimizes the error. The error function can be expressed in many ways; some common functions are \textbf{absolute error}:
+Another common supervised learning task is regression. While classification assigns to each instance a class (out of a finite set of classes), regression predicts a real-valued number. More formally: given a training set $<x_i, y_i>$ for some unknown target function $f$, regression is the task of learning $f$ by finding a good approximation; that is, one that minimizes the error. The error function can be expressed in many ways; some common functions are \textbf{absolute error}:
 \begin{equation*}
     \sum_i |y_i - f(x_i)| \,,
 \end{equation*}
@@ -32,9 +30,7 @@ There's many ways to find the values of $a$ and $b$ such that $h(x) = \sum_i a_i
     2 \sum_i^n (y_i - w^T*x_i) (\dfrac{\partial \sum_i^n y_i}{\partial w_j} +\dfrac{\partial \sum_i^n w^T x_i}{\partial w_j}) = 2 \sum_i^n (y_i - w^T*x_i) ( 0 + \sum_i^n x_{i,j}) = \\
     2 \sum_i^n (y_i - w^T*x_i) x_{i,j} \,,
 \end{gather*}
-where $x_{i,j}$ refers to the $j^{th}$ attribute of the $i^{th}$ example.
-
-By setting this to 0 for all $w_i$, we find that:
+where $x_{i,j}$ refers to the $j^{th}$ attribute of the $i^{th}$ example. By setting this to 0 for all $w_i$, we find that:
 \begin{gather*}
     \dfrac{\partial E(w)}{\partial w_0} = \dfrac{\partial E(w)}{\partial b} = 2 \sum_i^n (y_i - w^T*x_i) = 2 \sum_i^n (y_i - a^Tx_i) - b = \\
     2 \sum_i^n (y_i - a^Tx_i) - 2\sum_i^n b = \sum_i^n (y_i - a^Tx_i) - 2n*b = 0 \\
@@ -50,16 +46,13 @@ Linear regression can also benefit from regularization, a technique that control
 \begin{equation*}
     E(w) = \sum_i^n (y_i - w^Tx_i)^2 + \lambda \|w\|_2^2 \,,
 \end{equation*}
-where $\lambda$ is called \textbf{learning rate}.
-If the residual becomes too low, the norm 2 of the weight vector will be high, so the training algorithm will decrease the values of the weights to minimize the overall error, thus reducing the complexity of the model and avoiding overfitting. Obviously, different values of $\lambda$ will affect training differently: if it's too low it may not regularize enough, if it's too high it may cause underfitting.
-
-Another common regularization is \textbf{lasso regularization}, which uses norm 1 instead:
+where $\lambda$ is called \textbf{learning rate}. If the residual becomes too low, the norm 2 of the weight vector will be high, so the training algorithm will decrease the values of the weights to minimize the overall error, thus reducing the complexity of the model and avoiding overfitting. Obviously, different values of $\lambda$ will affect training differently: if it's too low it may not regularize enough, if it's too high it may cause underfitting. Another common regularization is \textbf{lasso regularization}, which uses norm 1 instead:
 \begin{equation*}
     E(w) = \sum_i^n (y_i - w^Tx_i)^2 + \lambda \|w\|_1 \,.
 \end{equation*}
 They function similarly, but lasso regularization in particular performs what's called \textbf{variable selection}, i.e., it tends to bring multiple free parameters to 0 instead of simply reducing them all in value (since norm 1 returns the sum of absolute values of the weights instead of their squared sum).
 
-As a closing paragraph to this section, here's a list of commonly used error functions:
+Here's a list of commonly used error functions:
 \begin{itemize}
     \item \textbf{Coefficient of determination}:
     \begin{equation*}
@@ -80,8 +73,6 @@ As a closing paragraph to this section, here's a list of commonly used error fun
 
 \section{Non-linear Regression}
 
-For some collections of data, the relationship between $X$ and $Y$ may not be linear.
-
-A model that's often used for non-linear regression is K-Nearest Neighbors. It functions the same as for classification, but instead of returning the majority class of the neighborhood, it returns the average value. It can used with the weighted variant as well.
+For some collections of data, the relationship between $X$ and $Y$ may not be linear. A model that's often used for non-linear regression is K-Nearest Neighbors. It functions the same as for classification, but instead of returning the majority class of the neighborhood, it returns the average value. It can used with the weighted variant as well.
 
 Another model that can be used for regression is Decision Trees. The tree can be constructed with the same algorithms seen for classification, obviously using an appropriate error measure (such as MSE or MAE). Then, once a leaf is reached when calculating the value for a new instance, either the leaf is pure, so the only value present is chosen as the prediction, or else the average of the values of the instances within that leaf is chosen. 

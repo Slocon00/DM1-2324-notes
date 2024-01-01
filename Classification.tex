@@ -25,7 +25,7 @@ Or, in the case of multiple classes:
 \end{equation*}
 \begin{equation*}
     1_{v,y_i} = \begin{cases}
-        1 & v > y_i \\
+        1 & v = y_i \\
         0 & else
     \end{cases}
 \end{equation*}
@@ -34,13 +34,13 @@ If it's a regression task, it will be calculated as the mean of the labels:
     h(x) = avg_k(x) = \frac{\sum_{x_i \in N_k(x)} y_i}{k}
 \end{equation*}
 
-K-NN is not a model in the traditional sense; it does not produce an hypothesis that can be used on any new input, and instead constructs a new hypothesis ad hoc for each input.
+K-NN is not a model in the traditional sense; it does not produce an hypothesis that can be used on any new input, and instead constructs a new hypothesis \textit{ad hoc} for each input.
 
 A key aspect to consider when using K-NN is setting the appropriate value of $k$. If $k$ is too big, for example $k$ close to $l$ (the number of training instances), then it will perform poorly, since each input, including training points, will always correspond to the same output (majority vote among all points/mean of all labels), thus leading to underfitting. If $k$ is instead too small, for example $k = 1$, then we will have overfitting, where each training point is classified correctly, but we will have high generalization error for unseen data, since the output will be estimated by looking at the single closest point to it. As a general practice, $k$ is set to $\sqrt{l}$, although the method is not infallible.
 
 A variant of K-NN uses weighted voting, were weights are calculated as the inverse of the distance between the input and the neighbor so that closer points will influence the result much more than distant ones. The hypothesis for classification becomes:
 \begin{equation*}
-    h(x) = argmax_v \sum_{x_i \in N_k(x)}  \dfrac{1_{v,y_i}}{d(x,x_i)^2} \, ,
+    h(x) = \arg \max_v \sum_{x_i \in N_k(x)}  \dfrac{1_{v,y_i}}{d(x,x_i)^2} \, ,
 \end{equation*}
 while the one for regression becomes:
 \begin{equation*}
@@ -104,7 +104,7 @@ In the context of this classifier, the different terms of the joint probability 
     \end{tabular}
 \end{table}
 
-The learning algorithm finds the posterior probability for any possible couple of events $X$ and $Y$; a new record $X'$ can be classified by finding the class $Y'$ that maximized the posterior probability $P(Y'=y'|X'=x')$. This estimation is always done under the \textbf{Naïve Bayes Assumption}: all the attributes are \textbf{conditionally independent} of each other given a class label $y$, that is:
+The learning algorithm can find the posterior probability for any possible couple of events $X$ and $Y$; a new record $X'$ can be classified by finding the class $Y'$ that maximizes the posterior probability $P(Y'=y'|X'=x')$. This estimation is always done under the \textbf{Naïve Bayes Assumption}: all the attributes are \textbf{conditionally independent} of each other given a class label $y$, that is:
 
 \begin{equation*}
     P(X=x|Y=y) = \prod_i P(X_i = x_i|Y=y) \, ,
@@ -115,7 +115,7 @@ where each $X_i$ is a different attribute of the record $X$. In practice, this m
     P(X_1 | X_2,Y) = P(X_1|Y) \, .
 \end{equation*}
 
-Obviously, we don't actually know the real probability of the variables, so we must make some estimations based on the available data.
+Because of this assumption, the conditional probability $P(X_i | Y)$ can be calculated for each possible attribute/class value pair, and those same probabilities can be multiplied to calculate the probability for a whole record. Obviously, we don't actually know the ``real'', ground-truth probability of the variables, so we must make some estimations based on the available data.
 
 For categorical data, we calculate $P(Y=y) = \frac{N_y}{N}$, i.e., it's the ratio between the number of records with label $y$ and the overall number of records, and $P(X=x|Y=y) = \frac{N_{xy}}{N_y}$, so the number of times a record has value $x$ for the attribute $X$ and the target label is $y$, divided by the number of total records with label $y$.
 
@@ -125,30 +125,30 @@ Consider the dataset described by the table below.
     \includegraphics[width=0.5\linewidth]{img/NBC.png} 
 \end{figure}
 
-Then, $P(Evade = Yes) = 3/10$, and $P(Marital_Status = Single | Evade = Yes) = 2/3$.
+Then, $P(Evade = Yes) = 3/10$, and $P(Marital\_Status = Single | Evade = Yes) = 2/3$.
 
 Datasets, however, often contain continuous data. In order to deal with such attributes, the solutions can be:
 \begin{itemize}
     \item Discretization of the values into bins, although it would violate the independence assumption;
-    \item Two way split, so the values are split into two intervals and we choose one of them;
+    \item Two way split, so the values are split into two intervals and we choose one of them, although this approach may lose information;
     \item We use a \textbf{probability density distribution}. This means that we assume a certain distribution function for the variable and use it on unseen data.
 \end{itemize}
 
 A commonly used distribution function is the \textbf{Gaussian/normal distribution function}:
 
 \begin{equation*}
-    P(X_i = x_i | Y = yi) = \dfrac{1}{\sqrt{2 \pi} \sigma_{ij}} e^{-\frac{(x_{ij} - \mu_{ij})^2}{2 \sigma_{ij}^2}} \, ,
+    P(X_i = x_i | Y = y_j) = \dfrac{1}{\sqrt{2 \pi} \sigma_{ij}} e^{-\frac{(x_{ij} - \mu_{ij})^2}{2 \sigma_{ij}^2}} \, ,
 \end{equation*}
 where the mean $\mu_{ij}$ can be estimated as the mean of $X_i$ for all the records belonging to class $y$, and the variance $\sigma_{ij}^2$ can be estimated as the sample variance $s^2$ of the same records.
 
 One thing to notice is that if the conditional probability for any attribute is 0, then the likelihood will be 0 as well. Zero conditional probabilities arise then the number of training instances is small and the number of possible values of an attribute is large. The Naïve Bayes Classifier, as is, cannot classify records when this happens. To address the problem, it is important to adjust the conditional probability estimates so that they are not simple fractions of training instances. This can be achieved by using the following alternate estimates of conditional probability:
 
 \begin{equation*}
-    P(X = x| Y = y) = \dfrac{N_{xy} + 1}{N_y + v} \, \text{(\textbf{Laplace estimate})},
+    P(X = x| Y = y) = \dfrac{N_{xy} + 1}{N_y + |Y|} \, \text{(\textbf{Laplace estimate})},
 \end{equation*}
 
 \begin{equation*}
-    P(X = x| Y = y) = \dfrac{N_{xy} + mp}{N_y + m} \, \text{(\textbf{M-estimate}}.
+    P(X = x| Y = y) = \dfrac{N_{xy} + mp}{N_y + m} \, \text{(\textbf{M-estimate)}}.
 \end{equation*}
 Here, $v$ is the total number of attribute values that $X$ can take. $p$ is an initial estimate of $P(X = x | y)$ that is known a priori, and $m$ is an hyperparameter that represents our confidence in using $p$ when the fraction of training examples is too brittle. Note that these estimates provide non-zero values even when $n_c = 0$.
 
@@ -303,7 +303,7 @@ We can now present a full pseudocode for a decision tree induction algorithm.
             \State root.testcond = \texttt{find\_best\_split}$(E,F)$
 
             \For{$v \in $ root.testcond.outcome}
-                \State $E_v$ = $\{e | root.testcond(e) = v and e \in E \}$
+                \State $E_v$ = $\{e | root.testcond(e) = v \land e \in E \}$
                 \State child = \texttt{TreeGrowth}$(E_v,F)$
                 \State add child as descendant to root and label the edge as $v$.
             \EndFor
@@ -328,7 +328,8 @@ A decision tree can encode any discrete-valued function, since they can be repre
 \paragraph{Computational efficiency}
 Decision tree induction algorithms typically employ an heuristic-based search in the hypothesis space. These searches can construct a reasonably good decision tree quickly even with large datasets (with a complexity of $O(m nlog(n))$, where $m$ is the number of attributes and $n$ is the number of instances). Also, once a decision tree has been built, the cost of classifying a new instance is $O(w)$, where $w$ is the maximum depth of the tree.
 
-\paragraph{Handling of missing values}: missing values can be dealt with in different ways, both in the training set and in the test set. If there's missing values in the test set, the classifier must choose which path to follow if a value is missing for a given test instance. The \textbf{probabilistic split method} (used by the C4.5 classifier) distributes the data instance to every child of that node according to the probability that the missing attribute has a particular value. In another approach, known as \textbf{surrogate split method} (used by the CART classifier), the instance whose splitting attribute value is missing is assigned to one of the child nodes based on the value of another non-missing surrogate attribute whose splits most resemble the partitions made by the missing attribute. The \textbf{separate class method} (used by the CHAID algorithm) treats the missing value as a separate categorical value. Alternatively, data preprocessing is needed to replace missing values with a mean or a mode.
+\paragraph{Handling of missing values}
+Missing values can be dealt with in different ways, both in the training set and in the test set. If there's missing values in the test set, the classifier must choose which path to follow if a value is missing for a given test instance. The \textbf{probabilistic split method} (used by the C4.5 classifier) distributes the data instance to every child of that node according to the probability that the missing attribute has a particular value. In another approach, known as \textbf{surrogate split method} (used by the CART classifier), the instance whose splitting attribute value is missing is assigned to one of the child nodes based on the value of another non-missing surrogate attribute whose splits most resemble the partitions made by the missing attribute. The \textbf{separate class method} (used by the CHAID algorithm) treats the missing value as a separate categorical value. Alternatively, data preprocessing is needed to replace missing values with a mean or a mode.
 
 During training, if an attribute $v$ has missing values in some training instances associated with a node, we need to measure the gain of purity if $v$ is used for splitting. One way to do so it to just exclude instances with missing values of $v$ in the counting instances associated with every child node. If $v$ is chosen, then the instances with missing values can be propagated to children using the methods seen for testing.
 
@@ -351,11 +352,11 @@ Since we use a greedy approach, we often cannot find the optimal tree.
 \paragraph{Rectilinear decision boundaries}
 Since each split is done considering one attribute at a time, the decision boundary is going to be rectilinear, i.e., composed of lines parallel to the axes. A more accurate approximation of the real decision boundary can be obtained with \textbf{oblique decision trees}, which allow multiple attributes to be tested at each node. Although they can produce more compact trees and are more expressive, they are also more computationally expensive to construct, since finding the optimal test condition is not as easy.
 
-\paragraph{Data fragmentation}:
+\paragraph{Data fragmentation}
 As the tree is traversed, the number of instances gradually gets smaller. The number of instances in the leaves could potentially be too small to make any statistically significant decision.
 
 \paragraph{Tree replication}
-The final tree may need to have some replicated subtrees (think of the one constructed to approximate the boolean parity function). The need for replication means that it takes longer to learn the tree, and replicated subtrees learned further down must be learned using a smaller training subset. Some approaches to deal with replication include constructing a \textbf{decision graph}, where children may have more than one parent, or using obliue decision trees with multivariate tests at each node.
+The final tree may need to have some replicated subtrees (think of the one constructed to approximate the boolean parity function). The need for replication means that it takes longer to learn the tree, and replicated subtrees learned further down must be learned using a smaller training subset. Some approaches to deal with replication include constructing a \textbf{decision graph}, where children may have more than one parent, or using oblique decision trees with multivariate tests at each node.
 
 \section{Model Evaluation}
 \subsection{Metrics for Model Evaluation}
@@ -365,11 +366,11 @@ The most basic approach for representing a classifier's performance on a test se
 \begin{itemize}
     \item \textbf{True Positive (TP)}, or $f_{++}$, which corresponds to the number of positive examples correctly classified;
 
-    \item \textbf{False Positive (FP)}, or $f_{-+}$, which corresponds to the number of positive examples incorrectly classified as negative;
+    \item \textbf{False Positive (FP)}, or $f_{-+}$, which corresponds to the number of negative examples incorrectly classified as positive;
 
     \item \textbf{True Negative (TN)}, or $f_{--}$, which corresponds to the number of negative examples correctly classified;
 
-    \item \textbf{False Negative (FN)}, or $f_{+-}$, which corresponds to the number of negative examples incorrectly classified as positive.
+    \item \textbf{False Negative (FN)}, or $f_{+-}$, which corresponds to the number of positive examples incorrectly classified as negative.
 \end{itemize}
 
 The confusion matrix is drawn as follows:
@@ -380,9 +381,9 @@ The confusion matrix is drawn as follows:
          \hline
          & pred. + & pred. - \\
         \hline
-        actual + & $f_{++}$ & $f_{-+}$\\
+        actual + & $f_{++}$ & $f_{+-}$\\
         \hline
-        actual - & $f_{+-}$ & $f_{--}$\\
+        actual - & $f_{-+}$ & $f_{--}$\\
         \hline
     \end{tabular}
 \end{table}
@@ -443,7 +444,7 @@ A \textbf{cost matrix} can be defined to assign specific costs to different coun
 \end{table}
 Each $C(i|j)$ is the cost of misclassifying class $j$ as class $i$. The cost of classification is calculated the same as accuracy, except each term is multiplied by the corresponding cost.
 
-Accuracy is proportional to cost if $TP = TN = p$ and $FP = FN = q$; accuracy would be calculated as $(TP + TN)/tot$, and the cost as:
+Accuracy is proportional to cost if $C(TN) = C(TN) = p$ and $C(FP) = C(FN) = q$; accuracy would be calculated as $(TP + TN)/tot$, and the cost as:
 
 \begin{align*}
     Cost = p(TP + TN) + q(FP + FN) \\
@@ -564,9 +565,7 @@ Let's consider error estimation for decision tree classifiers. The pessimistic e
 \begin{equation*}
     R(T) = R_{emp}(T) + \omega \dfrac{k}{N_{train}} \,,
 \end{equation*}
-where $\omega$ is the cost of adding a leaf node, and $N_{train}$ is the number of training instances.
-
-The optimistic error estimation would simply be:
+where $\omega$ is the cost of adding a leaf node, and $N_{train}$ is the number of training instances. The optimistic error estimation would simply be:
 \begin{equation*}
     R(T) = R_{emp}(T)
 \end{equation*}
