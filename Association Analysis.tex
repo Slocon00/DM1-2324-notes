@@ -163,27 +163,22 @@ Each frequent $k$-itemset, $Y$, can produce up to $2^k - 2$ association rules, e
 \begin{algorithm}[h]
 \caption{Procedure \texttt{ap-genrules}($f_k, H_m$).}
 \begin{algorithmic}[1]
-    \State $k = |f_k|$
-    \State $m = |H_m|$
-
-    \If{$k > m+1$}
+    \For{$h_m \in H_m$}
+        $conf = \sigma(f_k) / \sigma(f_k - h_m)$
+        \If{$conf \geq minconf$}
+            \State Output $(f_k - h_m) \rightarrow h_m$.
+        \Else{}
+            \State Delete $h_m$ from $H_m$.
+        \EndIf
+    \EndFor
+    \If{$k > m + 1$}
         \State $H_{m+1}$ = \texttt{candidate-gen}($H_m$)
-        \State $H_{m+1}$ = \texttt{candidate-prune}($H_{m+1}, H_m$)
-
-        \For{each $h_{m+1} \in H_{m+1}$}
-            \State $conf = \sigma(f_k) / \sigma(f_k - h_{m+1})$
-            \If{$conf \geq minconf$}
-                \State \Return $(f_k - h_{m+1}) \rightarrow h_{m+1}$
-            \Else
-                Delete $h_{m+1}$ from $H_{m+1}$
-            \EndIf
-        \EndFor
-        \texttt{ap-genrules}($f_k, H_{m+1}$)
+        \State \texttt{ap-genrules}($f_k, H_{m+1}$)
     \EndIf
 \end{algorithmic}
 \end{algorithm}
 
-The process followed by the algorithm to generate new rules is similar to the one seen previously. Initially, only the rules with one item in the consequent are extracted from the frequent itemsets, and the rules with a too low confidence are discarded. The remaining rules are merged to generate new candidate rules: each pair of rules generates a new one by merging the consequents of both. The rules with low confidence are again discarded, and the procedure continues until it generates all rules of high confidence (up to those with only one item in the antecedent).
+The process followed by the algorithm to generate new rules is similar to the one seen previously. Initially, only the rules with one item in the consequent are extracted from the frequent itemsets, and the rules with a too low confidence are discarded. The remaining rules are merged to generate new candidate rules: each pair of rules generates a new one by merging the consequents of both. The rules with low confidence are again discarded, and the procedure continues until it generates all rules of high confidence (up to those with only one item in the antecedent)\footnote{The algorithm on the \textit{Introduction to Data Mining} book presents an incorrect algorithm. This corrected algorithm was taken from \url{https://jeszysblog.wordpress.com/2012/07/23/breaking-the-silence-a-note-about-the-apriori-algorithm/}. The \textit{errata corrige} on the book's webpage does, however, show a (slightly different) corrected version that works the same.}. 
 
 \section{Compact Representation of Frequent Itemsets}
 
