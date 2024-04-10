@@ -15,8 +15,8 @@ A K-NN learner is a type of instance based/lazy classifier. This learner represe
 If it's a classification task, the output will correspond to the majority vote. If there's two classes, the output is calculated as:
 \begin{equation*}
     h(x) = \begin{cases}
-        1 & avg_k(x) > 0.5 \\
-        0 & else
+        1 & \textit{avg}_k(x) > 0.5 \\
+        0 & \text{else}
     \end{cases} \, ,
 \end{equation*}
 Or, in the case of multiple classes:
@@ -31,7 +31,7 @@ Or, in the case of multiple classes:
 \end{equation*}
 If it's a regression task, it will be calculated as the mean of the labels:
 \begin{equation*}
-    h(x) = avg_k(x) = \frac{\sum_{x_i \in N_k(x)} y_i}{k}
+    h(x) = \textit{avg}_k(x) = \frac{\sum_{x_i \in N_k(x)} y_i}{k}
 \end{equation*}
 
 K-NN is not a model in the traditional sense; it does not produce an hypothesis that can be used on any new input, and instead constructs a new hypothesis \textit{ad hoc} for each input.
@@ -67,7 +67,7 @@ The distance between two records $X$ and $Y$ is calculated as:
 \end{equation*}
 where $w_X$ and $w_Y$ are weight assigned to the records. Each weight is calculated as:
 \begin{equation*}
-    w_Z = \dfrac{N_{Z_{predict}}}{N_{Z_{correct}}} \, ,
+    w_Z = \dfrac{N_{Z_{\textit{predict}}}}{N_{Z_{\textit{correct}}}} \, ,
 \end{equation*}
 so it's the ratio between the amount of times the record $Z$ is used for prediction and the amount of times the prediction using $Z$ is actually correct. The less a record is reliable for prediction, the higher its weight and therefore distance from other records.
 
@@ -125,7 +125,7 @@ Consider the dataset described by the table below.
     \includegraphics[width=0.5\linewidth]{img/NBC.png} 
 \end{figure}
 
-Then, $P(Evade = Yes) = 3/10$, and $P(Marital\_Status = Single | Evade = Yes) = 2/3$.
+Then, $P(\textit{Evade} = \textit{Yes}) = 3/10$, and $P(\textit{Marital\_Status} = \textit{Single} | \textit{Evade} = \textit{Yes}) = 2/3$.
 
 Datasets, however, often contain continuous data. In order to deal with such attributes, the solutions can be:
 \begin{itemize}
@@ -224,23 +224,23 @@ For \textbf{binary attributes}, the test condition will generate two possible ou
 
 There are many measures that can be used to determine the goodness of an attribute test condition. These measures try to give preference to attribute test conditions that partition the instances into purer subsets in the child nodes, which means that each child contains instances belonging mostly to one class. Having a purer subset means that the corresponding node will be expanded less (or not at all, if it contains only one class), while having impure subsets may require a lot of splits and therefore a deeper tree, which might be susceptible to overfitting.
 
-The idea is to calculate the \textbf{impurity} of a node through an appropriate measure, both before and after splitting, and to choose the attribute test condition that produces the highest $Gain = Impurity_{pre} - Impurity_{post}$ (or, equivalently, the lowest impurity measure after splitting). The following are some commonly used impurity measures; $p_i(t)$ refers to the relative frequency of training instances that belong to class $i$ at node $t$, and $c$ is the total number of classes.
+The idea is to calculate the \textbf{impurity} of a node through an appropriate measure, both before and after splitting, and to choose the attribute test condition that produces the highest $\textit{Gain} = \textit{Impurity}_{\textit{pre}} - \textit{Impurity}_{\textit{post}}$ (or, equivalently, the lowest impurity measure after splitting). The following are some commonly used impurity measures; $p_i(t)$ refers to the relative frequency of training instances that belong to class $i$ at node $t$, and $c$ is the total number of classes.
 
 \BoxDef{Gini Index}{
 \begin{equation*}
-   Gini = 1 - \sum_{i=0}^{c-1} p_i(t)^2
+   \textit{Gini} = 1 - \sum_{i=0}^{c-1} p_i(t)^2
 \end{equation*}
 Maximum: $1-1/c$ \hfill Minimum: $0.0$
 }
 The Gini Index for a collection of nodes is calculated as:
 \begin{equation*}
-    Gini_{split} = \sum_{i=1}^k \dfrac{n_i}{n} Gini(i) \,,
+    \textit{Gini}_{\textit{split}} = \sum_{i=1}^k \dfrac{n_i}{n} \textit{Gini}(i) \,,
 \end{equation*}
 where $n_i$ is the number of records at child $i$ and $n$ is the number of records at parent node $p$. To choose the attribute for the current split to perform, we select the one that minimizes the weighted average Gini index of the children.
 
 For categorical attributes, the count matrix is calculated considering each distinct value, and an index is produced for the different possible multiway/binary splits.
 
-For continuous attributes, the construction of the count matrix is not as immediate. The split is done by choosing one or more threshold values to separate instances based on a inequality test: for a basic binary split, a value $v$ must be chosen so that one child node will contain all instances with $attr \leq v$, and the other child node will contain all instances with $attr > v$. The bruteforce approach to find the idea value of $v$ is to pick one value of the attribute at a time to use as a threshold, scan the database to compute the count matrix, and determine the Gini index. This approach is obviously inefficient, with a complexity of $O(n^2)$ (where $n$ is the number of training instances).
+For continuous attributes, the construction of the count matrix is not as immediate. The split is done by choosing one or more threshold values to separate instances based on a inequality test: for a basic binary split, a value $v$ must be chosen so that one child node will contain all instances with $\textit{attr} \leq v$, and the other child node will contain all instances with $\textit{attr} > v$. The bruteforce approach to find the idea value of $v$ is to pick one value of the attribute at a time to use as a threshold, scan the database to compute the count matrix, and determine the Gini index. This approach is obviously inefficient, with a complexity of $O(n^2)$ (where $n$ is the number of training instances).
 
 A more efficient algorithm is the following:
 \begin{enumerate}
@@ -256,7 +256,7 @@ This algorithm has a complexity of $O(nlog(n))$.
 
 \BoxDef{Entropy}{
 \begin{equation*}
-    Entropy = - \sum_{i=0}^{c-1} p_i(t) \log_2 (p_i(t))
+    \textit{Entropy} = - \sum_{i=0}^{c-1} p_i(t) \log_2 (p_i(t))
 \end{equation*}
 Maximum: $\log_2(c)$ \hfill Minimum: $0.0$
 }
@@ -265,7 +265,7 @@ The entropy is used the same way as the Gini index: the lower the value, the bet
 
 \BoxDef{Classification Error}{
 \begin{equation*}
-    Classification \; error = 1 - \max_i p_i(t)
+    \textit{Classification error} = 1 - \max_i p_i(t)
 \end{equation*}
 Maximum: $1-1/c$ \hfill Minimum: $0.0$
 }
@@ -281,7 +281,7 @@ In the C4.5 algorithm, a measure known as \textbf{gain ratio} is used, which com
 \BoxDef{Gain ratio}{
 The gain ratio is calculated as:
 \begin{equation*}
-    Gain \; ratio = \dfrac{Gain}{Split \; info} = \dfrac{Entropy(p) - \sum_{i=1}^k \dfrac{N(v_i)}{N} Entropy(v_i)}{- \sum_{i=1}^k \dfrac{N(v_i)}{N} \log_2(\dfrac{N(v_i)}{N})}
+    \textit{Gain ratio} = \dfrac{\textit{Gain}}{\textit{Split info}} = \dfrac{\textit{Entropy}(p) - \sum_{i=1}^k \dfrac{N(v_i)}{N} \textit{Entropy}(v_i)}{- \sum_{i=1}^k \dfrac{N(v_i)}{N} \log_2(\dfrac{N(v_i)}{N})}
 \end{equation*}
 where $N(v_i)$ is the number of instances assigned to node $v_i$, and $k$ is the total number of splits.
 }
@@ -300,10 +300,10 @@ We can now present a full pseudocode for a decision tree induction algorithm.
             \State return leaf
         \Else
             \State root = \texttt{create\_node()}
-            \State root.testcond = \texttt{find\_best\_split}$(E,F)$
+            \State \textit{root.testcond} = \texttt{find\_best\_split}$(E,F)$
 
             \For{$v \in $ root.testcond.outcome}
-                \State $E_v$ = $\{e | root.testcond(e) = v \land e \in E \}$
+                \State $E_v$ = $\{e | \textit{root.testcond}(e) = v \land e \in E \}$
                 \State child = \texttt{TreeGrowth}$(E_v,F)$
                 \State add child as descendant to root and label the edge as $v$.
             \EndFor
@@ -391,7 +391,7 @@ The confusion matrix is drawn as follows:
 These counts are summarized using a number of \textbf{evaluation measures}.
 All these measures can be generalized by the \textbf{weighted accuracy}, calculated as:
 \begin{equation*}
-    WAccuracy = \dfrac{w_1a + w_4d}{w_1a + w_2b + w_3c + w_4d} \, .
+    \textit{WAccuracy} = \dfrac{w_1a + w_4d}{w_1a + w_2b + w_3c + w_4d} \, .
 \end{equation*}
 
 \bgroup
@@ -405,21 +405,21 @@ All these measures can be generalized by the \textbf{weighted accuracy}, calcula
     | >{\centering\arraybackslash}m{100pt} | }
     
     \hline
-        True positive rate (Sensitivity, Recall) & $TPR = \dfrac{TP}{TP + FN}$ & Measures the rate at which positive instances are correctly classified. \\
+        True positive rate (Sensitivity, Recall) & $\textit{TPR} = \dfrac{\textit{TP}}{\textit{\textit{TP} + FN}}$ & Measures the rate at which positive instances are correctly classified. \\
         \hline
-        True negative rate (Specificity) & $TNR = \dfrac{TN}{TN + FP}$ & Measures the rate at which negative instances are correctly classified. \\
+        True negative rate (Specificity) & $\textit{TNR} = \dfrac{TN}{\textit{\textit{TN} + FP}}$ & Measures the rate at which negative instances are correctly classified. \\
         \hline
-        False positive rate (False alarm) & $FPR = 1 - TNR$ & Measures the rate at which positive instances are incorrectly classified. \\
+        False positive rate (False alarm) & $\textit{FPR} = 1 - \textit{TNR}$ & Measures the rate at which positive instances are incorrectly classified. \\
         \hline
-        False negative rate & $1 - TPR$ & Measures the rate at which negative instances are incorrectly classified. \\
+        False negative rate & $1 - \textit{TPR}$ & Measures the rate at which negative instances are incorrectly classified. \\
         \hline
-        Accuracy & $ Accuracy = \dfrac{TN + TP}{TN + TP + FN + FP}$ &  Measures the rate of correctly classified instances. \\
+        Accuracy & $\textit{Accuracy} = \dfrac{\textit{\textit{TN} + TP}}{\textit{\textit{TN} + \textit{TP} + \textit{FN} + FP}}$ &  Measures the rate of correctly classified instances. \\
         \hline
-        Precision (positive predicted value) & $Precision = \dfrac{TP}{TP + FP}$ & Measures how likely is the classifier to have most of its positive predictions be correct. \\
+        Precision (positive predicted value) & $\textit{Precision} = \dfrac{\textit{TP}}{\textit{TP} + \textit{FP}}$ & Measures how likely is the classifier to have most of its positive predictions be correct. \\
         \hline
-        False discovery rate & $FDR = 1 - Precision$ & Measures how likely is the classifier to have most of its positive predictions be incorrect. \\
+        False discovery rate & $\textit{FDR} = 1 - \textit{Precision}$ & Measures how likely is the classifier to have most of its positive predictions be incorrect. \\
         \hline
-        F-Measure & $F = \dfrac{2rp}{r+p} = \dfrac{2TP}{2TP + FN + FP}$ & Measures how likely is the classifier to have most of its positive predictions be incorrect. \\
+        F-Measure & $F = \dfrac{2rp}{r+p} = \dfrac{\textit{2TP}}{2\textit{TP} + \textit{FN} + \textit{FP}}$ & Measures how likely is the classifier to have most of its positive predictions be incorrect. \\
     \hline
     \end{tabular}
 \end{table}
@@ -447,10 +447,10 @@ Each $C(i|j)$ is the cost of misclassifying class $j$ as class $i$. The cost of 
 Accuracy is proportional to cost if $C(TN) = C(TN) = p$ and $C(FP) = C(FN) = q$; accuracy would be calculated as $(TP + TN)/tot$, and the cost as:
 
 \begin{align*}
-    Cost = p(TP + TN) + q(FP + FN) \\
-    = p(TP + TN) + q(tot - TP - TN) \\
-    = qtot - (q - p)(TP + TN) \\
-    = tot(q - (q-p)Accuracy).
+    \textit{Cost} = p(\textit{TP} + \textit{TN}) + q(\textit{FP} + \textit{FN}) \\
+    = p(\textit{TP} + \textit{TN}) + q(\textit{tot} - \textit{TP} - \textit{TN}) \\
+    = q\textit{tot} - (q - p)(\textit{TP} + \textit{TN}) \\
+    = \textit{tot}(q - (q-p)\textit{Accuracy}).
 \end{align*}
 
 If we have a multiclass classifier, then we calculate each measure for a single class at a time against all others. So, for example, if we have 3 classes A, B, and C, a false positive for A happens if the classifier identifies an element of either B or C as belonging to A.
@@ -487,16 +487,16 @@ The following procedure describes the generic approach for computing a ROC curve
 \begin{enumerate}
     \item Sort the test instances in increasing order of their scores (can be posterior probability calculated using some other classifier).
 
-    \item Select the lowest ranked test instance (with the lowest score), and assign that instance and all the ones ranked higher to the positive class. Since all the positive instances are classified correctly and all negative one are misclassified, $TPR = FPR = 1$.
+    \item Select the lowest ranked test instance (with the lowest score), and assign that instance and all the ones ranked higher to the positive class. Since all the positive instances are classified correctly and all negative one are misclassified, $\textit{TPR} = \textit{FPR} = 1$.
 
     \item Select the next test instance from the list. Classify the selected instance and those ranked higher as positive, anything below as negative. Update TP and FP counts accordingly.
 
-    \item Repeat the previous step and update TP and FP counts until the highest ranked instance is selected. At this final stage, $TPR = FPR = 0$.
+    \item Repeat the previous step and update TP and FP counts until the highest ranked instance is selected. At this final stage, $\textit{TPR} = \textit{FPR} = 0$.
 
     \item Plot the TPR against the FPR.
 \end{enumerate}
 
-A perfect model with 0 misclassifications would have $FPR = 0$ and $TPR = 1$. To summarize the aggregate behaviour across all operating points, one of the most commonly used measures is the \textbf{area under the ROC curve (AUC)}. If the classifier is perfect, the AUC is equal to 1. If the classifier is bad, and behaves as a random guesser, the AUC will be 0.5.
+A perfect model with 0 misclassifications would have $\textit{FPR} = 0$ and $\textit{TPR} = 1$. To summarize the aggregate behaviour across all operating points, one of the most commonly used measures is the \textbf{area under the ROC curve (AUC)}. If the classifier is perfect, the AUC is equal to 1. If the classifier is bad, and behaves as a random guesser, the AUC will be 0.5.
 
 Note that when comparing different models using AUC, we cannot say that a model is better than another for simply having an higher AUC (unless the difference is drastic enough). Consider the ROC curves for the models $M_1$ and $M_2$ pictured below:
 
@@ -520,7 +520,7 @@ The \textbf{lift chart} (or \textbf{gains chart}) is another popular technique, 
 
 The gray line is a reference line. For any given number of cases, it represents the expected number of positives we would predict if we did not have a model, but simply selected at random (similarly to the line in the middle of the ROC curve plot).
 
-From this chart, we can derive an economical value plot; e.g., given a predictive model for target marketing, how many customers should we target to maximize income? The profit is given by the following formula: $UnitB * MaxR * Lift(X) - UnitCost*N*X/100$, where $UnitB$ is the unit benefit, $MaxR$ is the expected number of potential responders in the population considered (of size $N$), $Lift(X)$ is the lift chart value for $X \in [0,1]$, and $UnitCost$ is the unit postal cost.
+From this chart, we can derive an economical value plot; e.g., given a predictive model for target marketing, how many customers should we target to maximize income? The profit is given by the following formula: $\textit{UnitB} * \textit{MaxR} * \textit{Lift}(X) - \textit{UnitCost}*N*X/100$, where \textit{UnitB} is the unit benefit, \textit{MaxR} is the expected number of potential responders in the population considered (of size $N$), $\textit{Lift}(X)$ is the lift chart value for $X \in [0,1]$, and \textit{UnitCost} is the unit postal cost.
 
 \begin{figure}
     \centering
@@ -548,7 +548,7 @@ There's many ways to divide the data to perform training, validation, and testin
 To select the final model, the strategy used is inspired by \textbf{Occam's razor/principle of parsimony}: when presented with two models with the same errors, the simpler model is preferred over the more complex one; again, we prefer simpler models because they're less likely to fall into overfitting. One way to estimate the generalization error of the model is:
 
 \begin{equation*}
-    R(Model) = R_{emp}(Model, TR) + \alpha Complexity(Model)
+    R(\textit{Model}) = R_{emp}(\textit{Model}, \textit{TR}) + \alpha \textit{Complexity}(\textit{Model})
 \end{equation*}
 
 \subsection{Model Assessment}

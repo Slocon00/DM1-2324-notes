@@ -44,7 +44,6 @@ Attributes can also be classified as:
     \item \textbf{Continuous}: attribute has real numbers as values. They are often represented by floating-point variables.
 \end{itemize}
 }
-
 The type of attribute can be determined by which of the following operations/properties apply:
 
 \begin{table}[h]
@@ -123,7 +122,7 @@ The dataset is heavily biased towards a certain type of object.
 \BoxDef{Mean}{
 The mean of a set of values is calculated as:
 \begin{equation*}
-    mean(x) = \dfrac{1}{m} \sum_{i=1}^{m} x_i
+    \textit{mean}(x) = \dfrac{1}{m} \sum_{i=1}^{m} x_i
 \end{equation*}
 }
 
@@ -141,7 +140,7 @@ The degree in which the data tends to spread is called the \textbf{dispersion}, 
 \BoxDef{Variance}{
 Variance is calculated as:
 \begin{equation*}
-    var(x) = \sigma_x^2(x) = \dfrac{\sum_{i=1}^m (x - mean(x))^2}{m-1}
+    \textit{var}(x) = \sigma_x^2(x) = \dfrac{\sum_{i=1}^m (x - \textit{mean}(x))^2}{m-1}
 \end{equation*}
 }
 
@@ -149,7 +148,7 @@ Variance is calculated as:
 Covariance measures the join variability of two variables, showing how much the two variables are connected by a linear relationship. It's calculated as: 
 
 \begin{equation*}
-    cov = \dfrac{\sum_{i=1}^n (x_i - mean(x))(y_i - mean(y))}{n-1}
+    \textit{cov}(x,y) = \dfrac{\sum_{i=1}^n (x_i - \textit{mean}(x))(y_i - \textit{mean}(y))}{n-1}
 \end{equation*}
 
 }
@@ -303,11 +302,11 @@ Correlation analysis is a popular technique for analyzing relationships between 
 \BoxDef{Pearson's correlation coefficient}{
 Pearson's correlation coefficient between two variables is calculated as:
     \begin{equation*}
-        corr(x,y) = \dfrac{cov(x,y)}{\sigma(x) \sigma(y)} = \dfrac{\sum_{i=1}^n (x_i - mean(x))(y_i - mean(y))}{(n-1) \sigma(x) \sigma(y)}
+        \textit{corr}(x,y) = \dfrac{\textit{cov}(x,y)}{\sigma(x) \sigma(y)} = \dfrac{\sum_{i=1}^n (x_i - \textit{mean}(x))(y_i - \textit{mean}(y))}{(n-1) \sigma(x) \sigma(y)}
     \end{equation*}
 }
 
-The value of this coefficient lays between -1 and 1. When $corr(x,y) = 1$, the two variables have a perfect positive correlation, else if $corr(x,y) = -1$, the two variables have perfect negative correlation. Correlation can also be graphically visualized by using an appropriate plot, called \textbf{correlation matrix}.
+The value of this coefficient lays between -1 and 1. When $\textit{corr}(x,y) = 1$, the two variables have a perfect positive correlation, else if $\textit{corr}(x,y) = -1$, the two variables have perfect negative correlation. Correlation can also be graphically visualized by using an appropriate plot, called \textbf{correlation matrix}.
 
 \begin{figure}[h]
     \centering
