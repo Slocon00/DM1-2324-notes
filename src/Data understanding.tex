@@ -46,7 +46,7 @@ Attributes can also be classified as:
 }
 The type of attribute can be determined by which of the following operations/properties apply:
 
-\begin{table}[h]
+\begin{table}[ht]
     \centering
     \begin{tabular}{l|l}
         (1) Distinctness & $=, \neq$\\
@@ -175,7 +175,7 @@ Visualizing data can be an useful and intuitive way to analyze it and detect gen
 
 A \textbf{bar chart} is used to depict the frequency of \textbf{categorical} attributes. An \textbf{histogram} is used to depict the frequency of \textbf{numerical} attributes. The range of attributes is normally discretized into a fixed number of intervals, called \textbf{bins}.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \begin{minipage}[b]{0.40\textwidth}
         \includegraphics[width=\textwidth]{img/bar chart.png}
@@ -224,7 +224,7 @@ A scatter plot is used to analyze the presence of clusters of points, outliers, 
 
 Multiple scatter plots can be aggregated in a \textbf{scatter matrix} that combines multiple attributes at once.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \begin{minipage}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{img/scatter plot.png}
@@ -250,7 +250,7 @@ A five number summary is done by determining five values, typically correspondin
 
 Once these values are calculated, the data can be visualized with a \textbf{box plot}. The $25^th$ and $75^{th}$ percentiles are the ends of the box, and the distance between the two is called the \textbf{interquartile range (IQR)}. The $10^{th}$ and $90^{th}$ percentile are instead called \textbf{whiskers}. This way of visualizing data is especially useful for discovering outliers.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.4\linewidth]{img/box plot.png}
     \caption{A box plot.}
@@ -259,7 +259,7 @@ Once these values are calculated, the data can be visualized with a \textbf{box 
 \paragraph{Parallel coordinates plot}
 This type of plot is often used to visualize attributes of high-dimensional data ($> 3$). Instead of using two perpendicular axes, this plot uses $n$ parallel axes (where $n$ is the number of attributes we want to visualize). The attribute values of each individual object are then plotted as points on each axis, forming a straight line. The resulting plot will contain a separate line for each object in the dataset. Areas with a denser number of lines suggest some correlation between the objects corresponding to those lines.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.4\linewidth]{img/Parallel coord plot.png}  
     \caption{A parallel coordinates plot.}
@@ -268,7 +268,7 @@ This type of plot is often used to visualize attributes of high-dimensional data
 \paragraph{Data matrix plot}
 Matrix plots are useful to visualize data sorted according to class. The attribute values are normalized to prevent one attribute from dominating the plot. A common type of data matrix plot is the distance matrix, which visualizes the value of the standard deviation $\sigma$ for each value.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.4\linewidth]{img/distance matrix.png}
     \caption{A distance matrix plot.}
@@ -280,7 +280,7 @@ A radar plot is similar to a parallel coordinates plot, in that it uses $n$ diff
 \paragraph{Star plot}
 The same as radar plots, but points are all drawn separately.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \begin{minipage}[b]{0.43\textwidth}
         \includegraphics[width=\textwidth]{img/radar plot.png}
@@ -308,7 +308,7 @@ Pearson's correlation coefficient between two variables is calculated as:
 
 The value of this coefficient lays between -1 and 1. When $\textit{corr}(x,y) = 1$, the two variables have a perfect positive correlation, else if $\textit{corr}(x,y) = -1$, the two variables have perfect negative correlation. Correlation can also be graphically visualized by using an appropriate plot, called \textbf{correlation matrix}.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.4\linewidth]{img/correlation matrix.png}
     \caption{A correlation matrix.}

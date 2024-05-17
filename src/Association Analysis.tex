@@ -149,7 +149,7 @@ Below is the prefix tree generated with the above example.
 
 Each frequent $k$-itemset, $Y$, can produce up to $2^k - 2$ association rules, excluding rules with empty antecedents or consequents. An association rule can be extracted by partitioning the itemset $Y$ into two non empty subsets, $X$ and $Y-X$, such that $c(X \rightarrow Y-X)$ is greater than \textit{minconf}. Computing the confidence of an association rule does not require additional scans of the transaction dataset. The itemsets from which rules are extracted from are all frequent, and so are their subsets. Below is the pseudocode of the algorithm.
 
-\begin{algorithm}[h]
+\begin{algorithm}[ht]
 \caption{Rule generation of the Apriori algorithm.}
 \begin{algorithmic}[1]
     \State $k = 2$
@@ -160,7 +160,7 @@ Each frequent $k$-itemset, $Y$, can produce up to $2^k - 2$ association rules, e
 \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[h]
+\begin{algorithm}[ht]
 \caption{Procedure \texttt{ap-genrules}($f_k, H_m$).}
 \begin{algorithmic}[1]
     \For{$h_m \in H_m$}
@@ -178,7 +178,7 @@ Each frequent $k$-itemset, $Y$, can produce up to $2^k - 2$ association rules, e
 \end{algorithmic}
 \end{algorithm}
 
-The process followed by the algorithm to generate new rules is similar to the one seen previously. Initially, only the rules with one item in the consequent are extracted from the frequent itemsets, and the rules with a too low confidence are discarded. The remaining rules are merged to generate new candidate rules: each pair of rules generates a new one by merging the consequents of both. The rules with low confidence are again discarded, and the procedure continues until it generates all rules of high confidence (up to those with only one item in the antecedent)\footnote{The algorithm on the \textit{Introduction to Data Mining} book presents an incorrect algorithm. This corrected algorithm was taken from \url{https://jeszysblog.wordpress.com/2012/07/23/breaking-the-silence-a-note-about-the-apriori-algorithm/}. The \textit{errata corrige} on the book's webpage does, however, show a (slightly different) corrected version that works the same.}. 
+The process followed by the algorithm to generate new rules is similar to the one seen previously. Initially, only the rules with one item in the consequent are extracted from the frequent itemsets, and the rules with a too low confidence are discarded. The remaining rules are merged to generate new candidate rules: each pair of rules generates a new one by merging the consequents of both. The rules with low confidence are again discarded, and the procedure continues until it generates all rules of high confidence (up to those with only one item in the antecedent)\footnote{The algorithm on the \textit{Introduction to Data Mining} book presents an incorrect algorithm. This corrected algorithm was taken from \raggedright\url{https://jeszysblog.wordpress.com/2012/07/23/breaking-the-silence-a-note-about-the-apriori-algorithm/}. The \textit{errata corrige} on the book's webpage does, however, show a (slightly different) corrected version that works the same.}. 
 
 \section{Compact Representation of Frequent Itemsets}
 

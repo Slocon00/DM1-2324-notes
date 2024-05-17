@@ -94,7 +94,7 @@ Before delving into the details of the algorithm, let's see some basic probabili
 
 In the context of this classifier, the different terms of the joint probability $P(Y=y|X=x)$ have specific names:
 
-\begin{table}[h]
+\begin{table}[ht]
     \centering
     \begin{tabular}{c|c}
         $P(Y=y|X=x)$ & Posterior probability\\
@@ -120,7 +120,7 @@ Because of this assumption, the conditional probability $P(X_i | Y)$ can be calc
 For categorical data, we calculate $P(Y=y) = \frac{N_y}{N}$, i.e., it's the ratio between the number of records with label $y$ and the overall number of records, and $P(X=x|Y=y) = \frac{N_{xy}}{N_y}$, so the number of times a record has value $x$ for the attribute $X$ and the target label is $y$, divided by the number of total records with label $y$.
 
 Consider the dataset described by the table below.
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\linewidth]{img/NBC.png} 
 \end{figure}
@@ -375,7 +375,7 @@ The most basic approach for representing a classifier's performance on a test se
 
 The confusion matrix is drawn as follows:
 
-\begin{table}[h]
+\begin{table}[ht]
     \centering
     \begin{tabular}{|c|c|c|}
          \hline
@@ -430,7 +430,7 @@ All these measures can be generalized by the \textbf{weighted accuracy}, calcula
 The most widely used is accuracy, although it's not suitable when classes are not balanced, since it tends to favor classifiers that correctly classify the majority class.
 
 A \textbf{cost matrix} can be defined to assign specific costs to different counts:
-\begin{table}[h]
+\begin{table}[ht]
     \centering
     \begin{tabular}{|c|c|c|}
          \hline
@@ -463,7 +463,7 @@ How can we obtain a reliable estimate of performance? Consider that performance 
 
 First of all, we need to find the smallest number of data records the model needs to produce an accurate estimate on new inputs. This can be done by drawing the learning curve, obtained by plotting the amount of data used against the accuracy. Typically, accuracy is evaluated by training on datasets of sizes increasing in powers of 10. The minimum size of the dataset can be chosen as the x value after which accuracy does not improve significantly.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\linewidth]{img/Learning curve.png}
     \caption{The learning curve plotted for different sizes of the training dataset.}
@@ -500,7 +500,7 @@ A perfect model with 0 misclassifications would have $\textit{FPR} = 0$ and $\te
 
 Note that when comparing different models using AUC, we cannot say that a model is better than another for simply having an higher AUC (unless the difference is drastic enough). Consider the ROC curves for the models $M_1$ and $M_2$ pictured below:
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\linewidth]{img/ROC_comparison.png}
     \caption{ROC curves for two different classifiers.}
@@ -512,7 +512,7 @@ $M_2$ does have a slightly bigger AUC compared to $M_1$, but they are both good 
 
 The \textbf{lift chart} (or \textbf{gains chart}) is another popular technique, used often in direct marketing. The input is a dataset where each ``case'' is scored with the estimated probability that it will belong to a given class. The lift chart is the constructed by plotting the cumulative number of cases (on the x axis) against the cumulative number of true positives (on the y-axis). 
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\linewidth]{img/Lift chart.png}
     \caption{Example of lift chart.}
@@ -522,7 +522,7 @@ The gray line is a reference line. For any given number of cases, it represents 
 
 From this chart, we can derive an economical value plot; e.g., given a predictive model for target marketing, how many customers should we target to maximize income? The profit is given by the following formula: $\textit{UnitB} * \textit{MaxR} * \textit{Lift}(X) - \textit{UnitCost}*N*X/100$, where \textit{UnitB} is the unit benefit, \textit{MaxR} is the expected number of potential responders in the population considered (of size $N$), $\textit{Lift}(X)$ is the lift chart value for $X \in [0,1]$, and \textit{UnitCost} is the unit postal cost.
 
-\begin{figure}
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\linewidth]{img/Lift chart application.png}
     \caption{Example of application of a lift chart.}
