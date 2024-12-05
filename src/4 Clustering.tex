@@ -409,9 +409,9 @@ The steps to calculate the silhouette coefficient for a points are the following
 \begin{enumerate}
     \item For the $i^{th}$ object, calculate its average distance to all other object in the same cluster; call this value $a_i$.
 
-    \item For the $i^{th}$ cluster and for any cluster not containing it, calculate the average distance between the point an all the objects in a given cluster. Find the minimum of these averages with respect to all clusters; call this value $b_i$.
+    \item For the $i^{th}$ object and for any cluster not containing it, calculate the average distance between the point an all the objects in a given cluster. Find the minimum of these averages with respect to all clusters; call this value $b_i$.
 
-    \item For the $i^{th}$ object, the silhouette coefficient is $s_i = \frac{b_i - a_i}{max(a_i,b_i)}$.
+    \item For the $i^{th}$ object, the silhouette coefficient is $s_i = \frac{b_i - a_i}{\max(a_i,b_i)}$.
 \end{enumerate}
 
 Thus, the value of the coefficient varies between -1 and 1. A negative value is not desirable, since it would mean $a_i$ is greater than $b_i$, so the point tends to be further away from points of its own cluster than external ones. We ideally want the coefficient to be positive, and $a_i$ to be as close to 0 as possible.
@@ -423,7 +423,3 @@ The silhouette coefficient of a whole cluster can be calculated as the average o
 SSE can be used to estimate the "goodness" of more complex datasets, with irregularly shaped clusters. It can also be used to compare two clusters or clusterings by comparing their average SSE.
 
 The SSE can also be used to estimate the number of clusters: if we plot the SSE versus the number of clusters obtained by executing an algorithm multiple times, we will likely see a distinct knee in the curve that corresponds to the ideal number of clusters to divide the data into. This can also be done with the silhouette coefficient, by looking at peaks instead of knees.
-
-\subsection{External Measures}
-
-TODO
